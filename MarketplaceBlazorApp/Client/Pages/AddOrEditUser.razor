@@ -1,0 +1,75 @@
+﻿@page "/addOrEditUser/{userID:int}"
+@using MarketplaceBlazorApp.Shared
+@using MarketplaceBlazorApp
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>AddOrEditUser</h3>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@user" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">@("@")</div>
+                </div>
+                <InputText type="text" class="form-control" id="mail" placeholder="Mail" @bind-Value="user.Mail" />
+            </div>
+        </div>
+        <div class="form-group">
+            <InputText type="password" class="form-control" id="password" placeholder="Şifre" @bind-Value="user.Password" />
+        </div>
+        <div class="form-group">
+            <InputText type="text" class="form-control" id="name" placeholder="Ad" @bind-Value="user.Name" />
+        </div>
+        <div class="form-group">
+            <InputText type="text" class="form-control" id="surname" placeholder="Soyad" @bind-Value="user.Surname" />
+        </div>
+        <div class="form-group">
+            <InputText type="text" class="form-control" id="tckno" placeholder="TC Kimlik No" @bind-Value="user.Tckno" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Güncelle</button>
+        </div>
+    </EditForm>
+}
+
+
+@code {
+    [Parameter] public int userID { get; set; }
+
+    private UserModel[] users;
+    private UserModel user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    async Task LoadItems()
+    {
+        if (userID == 0)
+        {
+            user = new UserModel();
+
+        }
+        else
+        {
+            users = await Http.GetJsonAsync<UserModel[]>($"api/user/{userID}");
+            user = users[0];
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        await Http.PutJsonAsync("api/user/", user);
+        NavigationManager.NavigateTo("showUsers");
+    }
+}

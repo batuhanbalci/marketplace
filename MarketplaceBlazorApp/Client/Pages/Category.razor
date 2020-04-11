@@ -1,0 +1,81 @@
+﻿@page "/category"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+<h3>Category</h3>
+
+@if (categories0 == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="level0" class="form-control" @onchange="Level0Changed">
+        <option>Kategori Seçiniz</option>
+        @foreach (var category in categories0)
+        {
+            <option value="@category.CategoryID">@category.CategoryName</option>
+        }
+    </select>
+}
+@if (categories1 == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="level1" class="form-control" @onchange="Level1Changed">
+        <option>Kategori Seçiniz</option>
+        @foreach (var category in categories1)
+        {
+            <option value="@category.CategoryID">@category.CategoryName</option>
+        }
+    </select>
+}
+@if (categories2 == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="level2" class="form-control">
+        <option>Kategori Seçiniz</option>
+        @foreach (var category in categories2)
+        {
+            <option value="@category.CategoryID">@category.CategoryName</option>
+        }
+    </select>
+}
+
+
+
+
+@code {
+    private IEnumerable<CategoryModel> categories0;
+    private IEnumerable<CategoryModel> categories1;
+    private IEnumerable<CategoryModel> categories2;
+
+    private int selectedID;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories0 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/0");
+    }
+
+    async Task Level0Changed(ChangeEventArgs e)
+    {
+        categories1 = null;
+        categories2 = null;
+        categories1 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/" + e.Value);
+    }
+
+    async Task Level1Changed(ChangeEventArgs e)
+    {
+        categories2 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/" + e.Value);
+    }
+
+    async Task CheckChildCategory()
+    {
+
+    }
+}

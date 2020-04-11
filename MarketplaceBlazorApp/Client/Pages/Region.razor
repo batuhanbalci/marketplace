@@ -1,0 +1,102 @@
+﻿@page "/region"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+@if (cities == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="cities" @onchange="CitySelectionChanged" class="form-control">
+        <option>Şehir Seçiniz</option>
+        @foreach (var city in cities)
+        {
+            <option value="@city.CityID">@city.City</option>
+        }
+    </select>
+}
+@if (counties == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="counties" @onchange="CountySelectionChanged" class="form-control">
+        <option>İlçe Seçiniz</option>
+        @foreach (var county in counties)
+        {
+            <option value="@county.CountyID">@county.County</option>
+        }
+    </select>
+}
+@if (districts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="districts" @onchange="DistrictSelectionChanged" class="form-control">
+        <option>Semt Seçiniz</option>
+        @foreach (var district in districts)
+        {
+            <option value="@district.DistrictID">@district.District</option>
+        }
+    </select>
+}
+@if (neighborhoods == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <select id="neighborhoods" @onchange="NeighborhoodSelectionChanged" class="form-control">
+        <option>Mahalle Seçiniz</option>
+        @foreach (var neighborhood in neighborhoods)
+        {
+            <option value="@neighborhood.NeighborhoodID">@neighborhood.Neighborhood</option>
+        }
+    </select>
+}
+
+@test
+
+@code {
+    private RegionCityModel[] cities;
+    private RegionCountyModel[] counties;
+    private RegionDistrictModel[] districts;
+    private RegionNeighborhoodModel[] neighborhoods;
+
+    string test = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        cities = await Http.GetJsonAsync<RegionCityModel[]>("api/Region/Cities");
+    }
+
+    async Task CitySelectionChanged(ChangeEventArgs e)
+    {
+        counties = null;
+        districts = null;
+        neighborhoods = null;
+        counties = await Http.GetJsonAsync<RegionCountyModel[]>("api/Region/Counties/" + e.Value);
+    }
+
+    async Task CountySelectionChanged(ChangeEventArgs e)
+    {
+        districts = null;
+        neighborhoods = null;
+        districts = await Http.GetJsonAsync<RegionDistrictModel[]>("api/Region/Districts/" + e.Value);
+    }
+
+    async Task DistrictSelectionChanged(ChangeEventArgs e)
+    {
+        neighborhoods = null;
+        neighborhoods = await Http.GetJsonAsync<RegionNeighborhoodModel[]>("api/Region/Neighborhoods/" + e.Value);
+    }
+
+    async Task NeighborhoodSelectionChanged(ChangeEventArgs e)
+    {
+        test = e.Value.ToString();
+    }
+}

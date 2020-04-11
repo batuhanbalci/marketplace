@@ -1,0 +1,104 @@
+﻿@page "/showItems"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+
+<h3>ShowItems</h3>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <a clas="h3" href="AddOrEditItem/0">Yeni ilan ekle.</a>
+
+    <input placeholder="Min" value="" @onchange="PriceFilterMin" />
+    <input placeholder="Max" value="" @onchange="PriceFilterMax" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ItemID</th>
+                <th>Başlık</th>
+                <th>Açıklama</th>
+                <th><a @onclick="SortByPrice">Fiyat</a></th>
+                <th><a @onclick="SortByDate">Yayınlanma Tarihi</a></th>
+                <th>Profil Foto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.ItemID</td>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.ReleaseDate</td>
+                    <td>@item.Price</td>
+                    @if (item.ProfilePhotoPath == null || item.ProfilePhotoPath == "")
+                    {
+                        <td><img width="100" src="img/NoImage.png" /></td>
+                    }
+                    else
+                    {
+                        <td><img width="100" src="@("img/" + item.ProfilePhotoPath)" /></td>
+                    }
+                    <td><a href="@("AddOrEditItem/" +  item.ItemID)">Düzenle</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private IEnumerable<ItemModel> items, origItems;
+    private bool sortByPriceState = true;
+    private bool sortByDateState = true;
+    private float minPrice, maxPrice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        origItems = await Http.GetJsonAsync<IEnumerable<ItemModel>>("api/Item");
+        items = origItems;
+    }
+
+    private void SortByPrice()
+    {
+        if (sortByPriceState)
+        {
+            items = items.OrderBy(x => x.Price);
+            sortByPriceState = false;
+        }
+        else
+        {
+            items = items.OrderByDescending(x => x.Price);
+            sortByPriceState = true;
+        }
+    }
+
+    private void SortByDate()
+    {
+        if (sortByDateState)
+        {
+            items = items.OrderBy(x => x.ReleaseDate);
+            sortByDateState = false;
+        }
+        else
+        {
+            items = items.OrderByDescending(x => x.ReleaseDate);
+            sortByDateState = true;
+        }
+    }
+
+    private void PriceFilterMin(ChangeEventArgs e)
+    {
+        items = origItems.Where(x => x.Price >= Convert.ToDecimal(e.Value));
+    }
+
+    private void PriceFilterMax(ChangeEventArgs e)
+    {
+        items = origItems.Where(x => x.Price <= Convert.ToDecimal(e.Value));
+    }
+}

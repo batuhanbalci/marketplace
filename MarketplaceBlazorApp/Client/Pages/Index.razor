@@ -1,0 +1,57 @@
+﻿@page "/"
+@using MarketplaceBlazorApp.Shared
+@using MarketplaceBlazorApp
+@inject HttpClient Http
+
+<h1>Anasayfa</h1>
+
+Tüm ilanlar
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in items)
+        {
+            <div class="col-sm-3 mb-3">
+                @if (item.ProfilePhotoPath == null || item.ProfilePhotoPath == "")
+                {
+                    <a href="@("AddOrEditItem/" + item.ItemID)"><img width="200" src="img/NoImage.png" /><br /></a>
+                }
+                else
+                {
+                    <a href="@("AddOrEditItem/" + item.ItemID)"><img width="200" heigh="200" src="@("img/" + item.ProfilePhotoPath)" /></a><br />
+                }
+                <a href="@("AddOrEditItem/" + item.ItemID)">@item.Title</a>
+            </div>
+        }
+    </div>
+}
+
+@code
+{
+    private IEnumerable<ItemModel> items;
+    private AuthenticateModel authenticateModel;
+    private UserModel user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authenticateModel = new AuthenticateModel();
+        authenticateModel.Mail = "dd@gmail.com";
+        authenticateModel.Password = "ds";
+        user = await Http.PostJsonAsync<UserModel>("api/user/authenticate", authenticateModel);
+
+        if (user.Token != null)
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Token);
+            items = await Http.GetJsonAsync<ItemModel[]>("api/Item");
+        }
+        else
+        {
+            Console.WriteLine("err");
+        }
+    }
+}

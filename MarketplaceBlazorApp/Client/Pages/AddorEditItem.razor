@@ -1,0 +1,152 @@
+﻿@page "/addOrEditItem/{itemID:int}"
+@using MarketplaceBlazorApp.Shared
+@using MarketplaceBlazorApp
+@using Microsoft.AspNetCore.Blazor.Hosting
+@inject HttpClient Http
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+
+<h3>AddOrEditItem</h3>
+
+@if (item == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@item" OnValidSubmit="HandleValidSubmit">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="title">Başlık</label>
+                    <InputText type="text" class="form-control" id="title" placeholder="Başlık" @bind-Value="item.Title" />
+                </div>
+                <div class="form-group">
+                    <label for="description">Açıklama</label>
+                    <InputTextArea class="form-control" id="description" rows="3" @bind-Value="item.Description"></InputTextArea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Fiyat</label>
+                    <InputNumber type="number" class="form-control" id="price" placeholder="0.00" step="any" @bind-Value="item.Price" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <MarketplaceBlazorApp.Client.Pages.Region></MarketplaceBlazorApp.Client.Pages.Region>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="map">Haritadan konum seçiniz :</label><br />
+                    <iframe id="map"
+                            width="600"
+                            height="300"
+                            frameborder="0" style="border:0"
+                            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB43_d1ZZdKVhjF_M3ywopNqwNLmiRoZmE&q=Ankara">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @if (item.ItemPhotos != null)
+                {
+                    @foreach (var item in item.ItemPhotos)
+                    {
+                        if (item != null && item.Path != "")
+                        {
+                            <div>
+                                <img width="200" src="@("img/" + item.Path)" /><br />
+                                <button @onclick="@(e => DeletePhoto(item.PhotoID))">Bu Fotoğrafı kaldır.</button><br />
+                                <button @onclick="@(e => MakeProfilePhoto(itemID, item.Path))">Bu fotoğrafı kapak fotoğrafı yap.</button>
+                            </div>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <RadzenUpload Multiple="true" Url="@($"api/file/upload/{item.ItemID}")" Accept="image/*" Progress="@((args)=> OnProgress(args, "Single"))" ChooseText="Fotoğraf Seç"></RadzenUpload>
+                    <RadzenCard>
+                        <RadzenProgressBar Value="@progress" Unit="@info" Visible="@(progress > 0)"></RadzenProgressBar>
+                    </RadzenCard>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button class="btn btn-primary">Güncelle</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+
+@code {
+    [Parameter] public int itemID { get; set; }
+
+    private ItemModel[] items;
+    private ItemModel item;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    int progress;
+    string info;
+
+    void OnProgress(UploadProgressArgs args, string name)
+    {
+        this.info = $"%'{name}' /{ args.Loaded } of { args.Total } bytes";
+        this.progress = args.Progress;
+    }
+
+    async Task MakeProfilePhoto(int id, string path)
+    {
+        ItemPhotoModel itemPhoto = new ItemPhotoModel();
+        itemPhoto.ItemID = id;
+        itemPhoto.Path = path;
+        await Http.PostJsonAsync("api/Item/MakeProfilePhoto", itemPhoto);
+        await LoadItems();
+    }
+
+    async Task HandleValidSubmit()
+    {
+        await Http.PutJsonAsync("api/item/UpdateItem", item);
+        await LoadItems();
+    }
+
+    async Task LoadItems()
+    {
+        if (itemID == 0)
+        {
+            item = new ItemModel();
+            item.ItemID = 0;
+            item.CategoryID = 2;
+            item.UserID = 1;
+            item.ReleaseDate = DateTime.Now;
+            item.ClickCount = 33;
+            item.MapX = 33;
+            item.MapY = 33;
+            item.ProfilePhotoPath = "";
+            item.State = "1";
+        }
+        else
+        {
+            items = await Http.GetJsonAsync<ItemModel[]>($"api/Item/{itemID}");
+            item = items[0];
+        }
+    }
+
+    async Task DeletePhoto(int photoID)
+    {
+        await Http.DeleteAsync($"api/image/{photoID}");
+        await LoadItems();
+    }
+}
