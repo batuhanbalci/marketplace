@@ -16,6 +16,13 @@ else
     <input placeholder="Min" value="" @onchange="PriceFilterMin" />
     <input placeholder="Max" value="" @onchange="PriceFilterMax" />
 
+    <select id="states" @onchange="ItemStateChanged" class="form-control">
+        <option value="255">Tüm İlanlar</option>
+        <option value="0">Bekleyen İlanlar</option>
+        <option value="1">Onaylanmış İlanlar</option>
+        <option value="2">Kaldırılmış İlanlar</option>
+    </select>
+
     <table class="table">
         <thead>
             <tr>
@@ -64,6 +71,34 @@ else
         items = origItems;
     }
 
+    #region Filters
+
+    private void ItemStateChanged(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "255")
+        {
+            items = origItems;
+        }
+        else
+        {
+            items = origItems.Where(x => Convert.ToByte(x.State) == Convert.ToByte(e.Value));
+        }
+    }
+
+    private void PriceFilterMin(ChangeEventArgs e)
+    {
+        items = origItems.Where(x => x.Price >= Convert.ToDecimal(e.Value));
+    }
+
+    private void PriceFilterMax(ChangeEventArgs e)
+    {
+        items = origItems.Where(x => x.Price <= Convert.ToDecimal(e.Value));
+    }
+
+    #endregion
+
+    #region Sorting
+
     private void SortByPrice()
     {
         if (sortByPriceState)
@@ -92,13 +127,5 @@ else
         }
     }
 
-    private void PriceFilterMin(ChangeEventArgs e)
-    {
-        items = origItems.Where(x => x.Price >= Convert.ToDecimal(e.Value));
-    }
-
-    private void PriceFilterMax(ChangeEventArgs e)
-    {
-        items = origItems.Where(x => x.Price <= Convert.ToDecimal(e.Value));
-    }
+    #endregion
 }

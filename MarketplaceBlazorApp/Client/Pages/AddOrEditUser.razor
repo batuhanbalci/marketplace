@@ -3,6 +3,7 @@
 @using MarketplaceBlazorApp
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Admin,Mağaza,Editör,Kullanıcı")]
 
 <h3>AddOrEditUser</h3>
 

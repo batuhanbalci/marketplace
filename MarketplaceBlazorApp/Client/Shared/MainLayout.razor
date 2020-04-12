@@ -1,20 +1,33 @@
 ﻿@inherits LayoutComponentBase
+@using System.Security.Claims;
 
 <div class="sidebar">
     <NavMenu />
 </div>
+
 
 <div class="main">
     <div class="top-row px-4">
         <div class="ml-md-auto">
             <AuthorizeView>
                 <Authorized>
-                    <a href="@("AddOrEditUser/" +  context.User.Identity)">Hello, @context.User.Identity.Name!</a>
-                    <a href="LogOut">Log out</a>
+                    @{
+                        var claimsIdentity = context.User.Identity as System.Security.Claims.ClaimsIdentity;
+                        if (claimsIdentity != null)
+                        {                                     
+                            var c = claimsIdentity.FindFirst(ClaimTypes.PrimarySid);
+                            if (c != null)
+                            {
+                                <a href="@("AddOrEditUser/" + c.Value)">Merhaba, @context.User.Identity.Name!</a>
+                            }
+                        }
+                    }
+
+                    <a href="LogOut">Çıkış Yap</a>
                 </Authorized>
                 <NotAuthorized>
-                    <a href="Login">Log in</a>
-                    <a href="Register">Register</a>
+                    <a href="Login">Giriş</a>
+                    <a href="Register">Kayıt Ol</a>
                 </NotAuthorized>
             </AuthorizeView>
         </div>

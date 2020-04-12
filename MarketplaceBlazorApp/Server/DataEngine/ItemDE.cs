@@ -57,8 +57,6 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@UserID", item.UserID);
             param.Add("@Price", item.Price);
             param.Add("@State", item.State);
-            param.Add("@ReleaseDate", item.ReleaseDate);
-            param.Add("@ClickCount", item.ClickCount);
             param.Add("@NeighborhoodID", item.NeighborhoodID);
             param.Add("@MapX", item.MapX);
             param.Add("@MapY", item.MapY);

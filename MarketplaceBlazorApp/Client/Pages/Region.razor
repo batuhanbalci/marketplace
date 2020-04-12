@@ -4,7 +4,7 @@
 
 @if (cities == null)
 {
-    <p><em>Loading...</em></p>
+    <select class="form-control"><option>İller yükleniyor</option></select>
 }
 else
 {
@@ -18,7 +18,7 @@ else
 }
 @if (counties == null)
 {
-    <p><em>Loading...</em></p>
+    <select class="form-control"><option>İl seçiniz</option></select>
 }
 else
 {
@@ -32,7 +32,7 @@ else
 }
 @if (districts == null)
 {
-    <p><em>Loading...</em></p>
+    <select class="form-control"><option>İlçe seçiniz</option></select>
 }
 else
 {
@@ -46,11 +46,11 @@ else
 }
 @if (neighborhoods == null)
 {
-    <p><em>Loading...</em></p>
+    <select class="form-control"><option>Semt seçiniz</option></select>
 }
 else
 {
-    <select id="neighborhoods" @onchange="NeighborhoodSelectionChanged" class="form-control">
+    <select id="neighborhoods" @onchange="OnChangeInternal" class="form-control">
         <option>Mahalle Seçiniz</option>
         @foreach (var neighborhood in neighborhoods)
         {
@@ -59,7 +59,7 @@ else
     </select>
 }
 
-@test
+Seçilen mahalledi ID : @neighborhoodID
 
 @code {
     private RegionCityModel[] cities;
@@ -67,7 +67,11 @@ else
     private RegionDistrictModel[] districts;
     private RegionNeighborhoodModel[] neighborhoods;
 
-    string test = "";
+    public int neighborhoodID { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback<int> OnChange { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,8 +99,12 @@ else
         neighborhoods = await Http.GetJsonAsync<RegionNeighborhoodModel[]>("api/Region/Neighborhoods/" + e.Value);
     }
 
-    async Task NeighborhoodSelectionChanged(ChangeEventArgs e)
+    async Task OnChangeInternal(ChangeEventArgs e)
     {
-        test = e.Value.ToString();
+        if (OnChange.HasDelegate)
+        {
+            neighborhoodID = Convert.ToInt32(e.Value);
+            await OnChange.InvokeAsync(Convert.ToInt32(e.Value));
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace MarketplaceBlazorApp
         private int categoryID; //??
         private int userID;
         private decimal price;
-        private string state;
+        private ItemStates state;
         private DateTime releaseDate;
         private int clickCount;
         private int neighborhoodID;
@@ -28,7 +28,7 @@ namespace MarketplaceBlazorApp
         public int CategoryID { get => categoryID; set => categoryID = value; }
         public int UserID { get => userID; set => userID = value; }
         public decimal Price { get => price; set => price = value; }
-        public string State { get => state; set => state = value; }
+        public ItemStates State { get => state; set => state = value; }
         public DateTime ReleaseDate { get => releaseDate; set => releaseDate = value; }
         public int ClickCount { get => clickCount; set => clickCount = value; }
         public int NeighborhoodID { get => neighborhoodID; set => neighborhoodID = value; }

@@ -3,8 +3,7 @@
 @using MarketplaceBlazorApp
 @using Microsoft.AspNetCore.Blazor.Hosting
 @inject HttpClient Http
-@using Newtonsoft.Json
-@using Microsoft.JSInterop
+@using System.Security.Claims;
 
 <h3>AddOrEditItem</h3>
 
@@ -14,6 +13,21 @@
 }
 else
 {
+    <AuthorizeView>
+        <Authorized>
+            @{
+                var claimsIdentity = context.User.Identity as System.Security.Claims.ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var c = claimsIdentity.FindFirst(ClaimTypes.PrimarySid);
+                    if (c != null)
+                    {
+                        userID = Convert.ToInt32(c.Value);
+                    }
+                }
+            }
+        </Authorized>
+    </AuthorizeView>
     <EditForm Model="@item" OnValidSubmit="HandleValidSubmit">
         <div class="row">
             <div class="col-sm-6">
@@ -33,7 +47,7 @@ else
         </div>
         <div class="row">
             <div class="col-sm-6">
-                <MarketplaceBlazorApp.Client.Pages.Region></MarketplaceBlazorApp.Client.Pages.Region>
+                <MarketplaceBlazorApp.Client.Pages.Region OnChange="@GetNeighborhoodID"></MarketplaceBlazorApp.Client.Pages.Region>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
@@ -93,6 +107,9 @@ else
     private ItemModel[] items;
     private ItemModel item;
 
+    private int neighborhoodID = 0;
+    private int userID;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadItems();
@@ -118,6 +135,16 @@ else
 
     async Task HandleValidSubmit()
     {
+        if (itemID == 0)
+        {
+            item.CategoryID = 2;
+            item.UserID = userID;
+            item.MapX = 0;
+            item.MapY = 0;
+            item.NeighborhoodID = neighborhoodID;
+            item.ProfilePhotoPath = "";
+            item.State = ItemStates.Bekleyen;
+        }
         await Http.PutJsonAsync("api/item/UpdateItem", item);
         await LoadItems();
     }
@@ -127,15 +154,6 @@ else
         if (itemID == 0)
         {
             item = new ItemModel();
-            item.ItemID = 0;
-            item.CategoryID = 2;
-            item.UserID = 1;
-            item.ReleaseDate = DateTime.Now;
-            item.ClickCount = 33;
-            item.MapX = 33;
-            item.MapY = 33;
-            item.ProfilePhotoPath = "";
-            item.State = "1";
         }
         else
         {
@@ -149,4 +167,11 @@ else
         await Http.DeleteAsync($"api/image/{photoID}");
         await LoadItems();
     }
+
+    private void GetNeighborhoodID(int id)
+    {
+        neighborhoodID = id;
+    }
+
+
 }

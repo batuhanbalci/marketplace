@@ -38,7 +38,8 @@ namespace MarketplaceBlazorApp.Server.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, login.Mail),
-                new Claim(ClaimTypes.Role, umodel.Role.ToString())
+                new Claim(ClaimTypes.Role, umodel.Role.ToString()),
+                new Claim(ClaimTypes.PrimarySid, umodel.UserID.ToString())//?? gerekli mi
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
