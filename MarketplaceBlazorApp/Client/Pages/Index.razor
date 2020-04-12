@@ -2,6 +2,8 @@
 @using MarketplaceBlazorApp.Shared
 @using MarketplaceBlazorApp
 @inject HttpClient Http
+@using MarketplaceBlazorApp.Client.AuthenticationStateProviders
+@inject IAuthService AuthService
 
 <h1>Anasayfa</h1>
 
@@ -39,19 +41,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        authenticateModel = new AuthenticateModel();
-        authenticateModel.Mail = "dd@gmail.com";
-        authenticateModel.Password = "ds";
-        user = await Http.PostJsonAsync<UserModel>("api/user/authenticate", authenticateModel);
+        //authenticateModel = new AuthenticateModel();
+        //authenticateModel.Mail = "dd@gmail.com";
+        //authenticateModel.Password = "ds";
+        //user = await Http.PostJsonAsync<UserModel>("api/user/authenticate", authenticateModel);
 
-        if (user.Token != null)
-        {
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", user.Token);
-            items = await Http.GetJsonAsync<ItemModel[]>("api/Item");
-        }
-        else
-        {
-            Console.WriteLine("err");
-        }
+        //var result = await AuthService.Login(authenticateModel);
+
+        items = await Http.GetJsonAsync<ItemModel[]>("api/Item");
+
     }
 }

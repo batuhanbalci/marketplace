@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MarketplaceBlazorApp
 {
@@ -12,13 +13,16 @@ namespace MarketplaceBlazorApp
         private Roles role;
         private string tckno;
         private string token;
-
+        private string confirmPassword;
+        private bool successful;
+        private string error;
         public int UserID { get => userID; set => userID = value; }
 
         [Required]
         [EmailAddress]
         public string Mail { get => mail; set => mail = value; }
 
+        [Required]
         public string Password { get => password; set => password = value; }
 
         [Required]
@@ -35,5 +39,23 @@ namespace MarketplaceBlazorApp
         [RegularExpression(@"^[0-9]*$")]
         public string Tckno { get => tckno; set => tckno = value; }
         public string Token { get => token; set => token = value; }
+
+        [Required]
+        public string ConfirmPassword { get => confirmPassword; set => confirmPassword = value; }
+        public bool Successful { get => successful; set => successful = value; }
+        public string Error { get => error; set => error = value; }
+    }
+
+    public class LoginResultModel
+    {
+        public bool Successful { get; set; }
+        public string Error { get; set; }
+        public string Token { get; set; }
+    }
+
+    public class RegisterResultModel
+    {
+        public bool Successful { get; set; }
+        public IEnumerable<string> Errors { get; set; }
     }
 }

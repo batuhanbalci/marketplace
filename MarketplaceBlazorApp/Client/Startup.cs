@@ -1,6 +1,8 @@
-using MarketplaceBlazorApp.Client.AuthenticationStateProviders;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
+using MarketplaceBlazorApp.Client.AuthenticationStateProviders;
 
 namespace MarketplaceBlazorApp.Client
 {
@@ -8,9 +10,10 @@ namespace MarketplaceBlazorApp.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
-            services.AddScoped<TokenAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthenticationStateProvider>());
+            services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

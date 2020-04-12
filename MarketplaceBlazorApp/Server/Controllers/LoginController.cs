@@ -1,0 +1,62 @@
+﻿using MarketplaceBlazorApp.Shared;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using MarketplaceBlazorApp.DataEngine;
+
+namespace MarketplaceBlazorApp.Server.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LoginController : ControllerBase
+    {
+        private readonly IConfiguration _configuration;
+
+        public LoginController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Login([FromBody] AuthenticateModel login)
+        {
+            UserModel umodel = new UserModel(); // TO DO : user modelsiz yap ya da daha efficient
+            UserDE userDE = new UserDE();
+            umodel.Mail = login.Mail;
+            umodel.Password = login.Password;
+            umodel = userDE.UserLogin(umodel);
+
+            //to do : yanlış login yapılırsa patlıyo
+            if (umodel.UserID == 0) return BadRequest(new UserModel { Successful = false, Error = "Username and password are invalid." });
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, login.Mail),
+                new Claim(ClaimTypes.Role, umodel.Role.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSecurityKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.Now.AddDays(Convert.ToInt32(_configuration["JwtExpiryInDays"]));
+
+            var token = new JwtSecurityToken(
+                _configuration["JwtIssuer"],
+                _configuration["JwtAudience"],
+                claims,
+                expires: expiry,
+                signingCredentials: creds
+            );
+
+            umodel.Successful = true;
+            umodel.Token = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(umodel);
+        }
+    }
+}

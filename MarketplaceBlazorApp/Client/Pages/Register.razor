@@ -1,0 +1,90 @@
+﻿@page "/register"
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<h1>Register</h1>
+
+@if (ShowErrors)
+{
+    <div class="alert alert-danger" role="alert">
+        @foreach (var error in Errors)
+        {
+            <p>@error</p>
+        }
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Please enter your details</h5>
+        <EditForm Model="@userModel" OnValidSubmit="HandleRegistration">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <InputText Id="email" class="form-control" @bind-Value="userModel.Mail" />
+                <ValidationMessage For="@(() => userModel.Mail)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="userModel.Password" />
+                <ValidationMessage For="@(() => userModel.Password)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre tekrar</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="userModel.ConfirmPassword" />
+                <ValidationMessage For="@(() => userModel.ConfirmPassword)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Ad</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="userModel.Name" />
+                <ValidationMessage For="@(() => userModel.Name)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Soyad</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="userModel.Surname" />
+                <ValidationMessage For="@(() => userModel.Surname)" />
+            </div>
+            <div class="form-group">
+                <label for="password">TC Kimlik No</label>
+                <InputText Id="password" type="password" class="form-control" @bind-Value="userModel.Tckno" />
+                <ValidationMessage For="@(() => userModel.Tckno)" />
+            </div>
+            <button type="submit" class="btn btn-primary">Kaydol</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    private UserModel userModel;
+    private bool ShowErrors;
+    private IEnumerable<string> Errors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userModel = new UserModel();
+    }
+
+    private async Task HandleRegistration()
+    {
+        ShowErrors = false;
+        RegisterResultModel result = null;
+
+        if (userModel.Password == userModel.ConfirmPassword)
+        {
+            result = await AuthService.Register(userModel);
+        }
+
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            Errors = result.Errors;
+            ShowErrors = true;
+        }
+    }
+}

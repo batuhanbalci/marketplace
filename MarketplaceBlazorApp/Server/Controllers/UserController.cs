@@ -14,29 +14,22 @@ namespace MarketplaceBlazorApp.Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        //[AllowAnonymous]
+        //[HttpPost("authenticate")]
+        //public async Task<IActionResult> Login([FromBody]AuthenticateModel model)
+        //{
+        //    //UserModel umodel = new UserModel();
+        //    //umodel.Mail = model.Mail;
+        //    //umodel.Password = model.Password;
+        //    //var user = _userService.Authenticate(umodel);
 
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
+        //    //if (user == null)
+        //    //{
+        //    //    return BadRequest(new { message = "Login failed, incorrect information." });
+        //    //}
 
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public async Task<IActionResult> Login([FromBody]AuthenticateModel model)
-        {
-            UserModel umodel = new UserModel();
-            umodel.Mail = model.Mail;
-            umodel.Password = model.Password;
-            var user = _userService.Authenticate(umodel);
-
-            if (user == null)
-            {
-                return BadRequest(new { message = "Login failed, incorrect information." });
-            }
-
-            return Ok(user);
-        }
+        //    //return Ok(user);
+        //}
 
         [HttpGet("{userID}")]
         public async Task<IEnumerable<UserModel>> GetUsers(int userID = 0)
@@ -47,6 +40,14 @@ namespace MarketplaceBlazorApp.Server.Controllers
 
         [HttpPut]
         public async Task UpdateUser([FromBody] UserModel user)
+        {
+            UserDE userDE = new UserDE();
+            await userDE.AddOrEdit(user);
+        }
+
+        [AllowAnonymous]
+        [HttpPut("register")]
+        public async Task RegisterUser([FromBody] UserModel user)
         {
             UserDE userDE = new UserDE();
             await userDE.AddOrEdit(user);
