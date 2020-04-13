@@ -11,19 +11,19 @@ namespace MarketplaceBlazorApp.DataEngine
 {
     public class ItemDE
     {
-        public static IEnumerable<ItemModel> GetItems(int itemID = 0)
+        public async Task<IEnumerable<ItemModel>> GetItems(int itemID = 0)
         {
-            return GetItemWithPhotos(itemID);
+            return await GetItemWithPhotos(itemID);
         }
 
-        public static List<ItemModel> GetItemWithPhotos(int itemID = 0) //TO DO : make better
+        public async Task<List<ItemModel>> GetItemWithPhotos(int itemID = 0) //TO DO : make better
         {
             var param = new { ItemID = itemID };
             using (SqlConnection cnn = new SqlConnection(DapperORM.GetConnectionString()))
             {
                 string sql = "ItemGET";
                 List<ItemModel> listItems = null;
-                var lists = cnn.Query<ItemModel, ItemPhotoModel, ItemModel>(sql, (i, p) =>
+                var lists = await cnn.QueryAsync<ItemModel, ItemPhotoModel, ItemModel>(sql, (i, p) =>
                 {
                     i.ItemPhotos = new List<ItemPhotoModel>();
                     i.ItemPhotos.Add(p);
@@ -71,6 +71,13 @@ namespace MarketplaceBlazorApp.DataEngine
                 param.Add("@ItemID", item.ItemID);
                 await DapperORM.ExecuteWithoutReturnAsync("ItemUPDATE", param);
             }
+        }
+
+        public async Task IncreaseClickCount(int itemID)
+        {
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@ItemID", itemID);
+            await DapperORM.ExecuteWithoutReturnAsync("ItemClickCountSET", param);         
         }
     }
 }

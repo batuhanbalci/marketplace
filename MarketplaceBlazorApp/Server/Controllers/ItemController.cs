@@ -17,15 +17,17 @@ namespace MarketplaceBlazorApp.Server.Controllers
     public class ItemController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<ItemModel> GetAllItems()
+        public async Task<IEnumerable<ItemModel>> GetAllItems()
         {
-            return ItemDE.GetItems();
+            ItemDE itemDE = new ItemDE();
+            return await itemDE.GetItems();
         }
 
         [HttpGet("{itemID}")]
-        public IEnumerable<ItemModel> GetItem(int itemID)
+        public async Task<IEnumerable<ItemModel>> GetItem(int itemID)
         {
-            return ItemDE.GetItemWithPhotos(itemID);
+            ItemDE itemDE = new ItemDE();
+            return await itemDE.GetItemWithPhotos(itemID);
         }
 
         [Route("[action]")]     //PUT???
@@ -42,6 +44,14 @@ namespace MarketplaceBlazorApp.Server.Controllers
         {
             ItemDE itemDE = new ItemDE();
             await itemDE.AddOrEditItem(item);
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task UpdateClickCount([FromBody] int itemID)
+        {
+            ItemDE itemDE = new ItemDE();
+            await itemDE.IncreaseClickCount(itemID);
         }
     }
 }

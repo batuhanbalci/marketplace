@@ -1,0 +1,74 @@
+﻿@page "/itemDetails/{itemID:int}"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+<h3>İlan Detayları</h3>
+
+@if (item == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <h3>@item.Title</h3>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            @if (item.ItemPhotos != null)
+            {
+                @foreach (var item in item.ItemPhotos)
+                {
+                    if (item != null && item.Path != "")
+                    {
+                        <div>
+                            <img width="200" src="@("img/" + item.Path)" /><br />
+                        </div>
+                    }
+                }
+            }
+        </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <p>Fiyat : @item.Price</p>
+            </div>
+            <div class="row">
+                <p>Yayınlanma Tarihi : @item.ReleaseDate</p>
+            </div>
+            <div class="row">
+                <p>Görüntülenme Sayısı : @item.ClickCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <p>@item.Description</p>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="map">Konumu :</label><br />
+                <iframe id="map"
+                        width="600"
+                        height="300"
+                        frameborder="0" style="border:0"
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB43_d1ZZdKVhjF_M3ywopNqwNLmiRoZmE&q=Ankara">
+                </iframe>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public int itemID { get; set; }
+    private ItemModel[] items;
+    private ItemModel item;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await Http.GetJsonAsync<ItemModel[]>($"api/Item/{itemID}");
+        item = items[0];
+        await Http.PostJsonAsync($"api/Item/UpdateClickCount", item.ItemID);
+    }
+
+}

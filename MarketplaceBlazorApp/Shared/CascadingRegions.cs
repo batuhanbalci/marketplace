@@ -2,28 +2,6 @@
 
 namespace MarketplaceBlazorApp
 {
-    public class CascadingRegions
-    {
-        private RegionCityModel city;
-        private RegionCountyModel county;
-        private RegionDistrictModel district;
-        private RegionNeighborhoodModel neighborhood;
-
-        private IEnumerable<RegionCityModel> cities;
-        private IEnumerable<RegionCountyModel> counties;
-        private IEnumerable<RegionDistrictModel> districts;
-        private IEnumerable<RegionNeighborhoodModel> neighborhoods;
-
-        public IEnumerable<RegionCityModel> Cities { get => cities; set => cities = value; }
-        public IEnumerable<RegionCountyModel> Counties { get => counties; set => counties = value; }
-        public IEnumerable<RegionDistrictModel> Districts { get => districts; set => districts = value; }
-        public IEnumerable<RegionNeighborhoodModel> Neighborhoods { get => neighborhoods; set => neighborhoods = value; }
-        public RegionCityModel City { get => city; set => city = value; }
-        public RegionCountyModel County { get => county; set => county = value; }
-        public RegionDistrictModel District { get => district; set => district = value; }
-        public RegionNeighborhoodModel Neighborhood { get => neighborhood; set => neighborhood = value; }
-    }
-
     public class RegionCityModel
     {
         private int cityID;
