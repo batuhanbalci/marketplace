@@ -7,6 +7,21 @@ namespace MarketplaceBlazorApp
 {
     public class CategoryModel
     {
+        public CategoryModel(int categoryID, string categoryName, int parentCategoryID)
+        {
+            this.CategoryID = categoryID;
+            this.CategoryName = categoryName;
+            this.ParentCategoryID = parentCategoryID;
+        }
+
+        public CategoryModel(string categoryName, int parentCategoryID)
+        {
+            this.CategoryName = categoryName;
+            this.ParentCategoryID = parentCategoryID;
+        }
+
+        public CategoryModel() { }
+
         private int categoryID;
         private string categoryName;
         private int parentCategoryID;
@@ -14,6 +29,6 @@ namespace MarketplaceBlazorApp
         public int CategoryID { get => categoryID; set => categoryID = value; }
         public string CategoryName { get => categoryName; set => categoryName = value; }
         public int ParentCategoryID { get => parentCategoryID; set => parentCategoryID = value; }
-        public virtual ICollection<CategoryModel> SubCategories { get; set; }
+        //public virtual ICollection<CategoryModel> SubCategories { get; set; }
     }
 }

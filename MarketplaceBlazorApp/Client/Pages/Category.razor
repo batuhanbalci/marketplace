@@ -6,26 +6,36 @@
 
 @if (categories0 == null)
 {
-    <p><em>Loading...ZAAA</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
-    <EditForm Model="@categories0.First()">
-        <div class="form-row align-items-center">
-            <div class="col-auto">
-                <select id="level0" class="form-control" @onchange="Level0Changed">
-                    <option>Kategori Seçiniz</option>
-                    @foreach (var category in categories0)
-                    {
-                        <option value="@category.CategoryID">@category.CategoryName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-auto">
-                <input @bind="selectedID0" class="form-control" />
-            </div>
+    <div class="form-row align-items-center mb-3">
+        <div class="col-auto">
+            <select id="level0" class="form-control" @onchange="Level0Changed">
+                <option>Kategori Seçiniz</option>
+                @foreach (var category in categories0)
+                {
+                    <option value="@category.CategoryID">@category.CategoryName</option>
+                }
+            </select>
         </div>
-    </EditForm>
+        <div class="col-auto">
+            <input @bind="selectedID0" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <input @bind="@newValue1" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCategory(0))" data-toggle="tooltip" data-placement="bottom" title="Seçilen kategori için yeni bir isim giriniz">Seçilen kategoriyi güncelle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => AddNewCategory(0))" data-toggle="tooltip" data-placement="bottom" title="Seçilen bir üst kategorinin altına ekler">Yeni kategori ekle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => DeleteCategory())" data-toggle="tooltip" data-placement="bottom" title="Silebilmek için önce kategoriye ait ilanların silinmesi gerekir">Sil</button>
+        </div>
+    </div>
 }
 @if (categories1 == null)
 {
@@ -33,34 +43,32 @@ else
 }
 else
 {
-    <EditForm Model="@categories1.First()" Context="formContext">
-        <div class="form-row align-items-center">
-            <div class="col-auto">
-                <select id="level1" class="form-control" @onchange="Level1Changed">
-                    <option>Kategori Seçiniz</option>
-                    @foreach (var category in categories1)
-                    {
-                        <option value="@category.CategoryID">@category.CategoryName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-auto">
-                <input @bind="selectedID1" class="form-control" />
-            </div>
-            <div class="col-auto">
-                <input @bind="@categories1.First().CategoryName" class="form-control" />
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCategory(formContext))">Seçilen kategoriyi güncelle</button>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" @onclick="@(() => AddNewCategory(formContext))">Yeni kategori ekle</button>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" @onclick="@(() => DeleteCategory(formContext))">Sil</button>
-            </div>
+    <div class="form-row align-items-center mb-3">
+        <div class="col-auto">
+            <select id="level1" class="form-control" @onchange="Level1Changed">
+                <option>Kategori Seçiniz</option>
+                @foreach (var category in categories1)
+                {
+                    <option value="@category.CategoryID">@category.CategoryName</option>
+                }
+            </select>
         </div>
-    </EditForm>
+        <div class="col-auto">
+            <input @bind="selectedID1" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <input @bind="@newValue1" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCategory(1))" data-toggle="tooltip" data-placement="bottom" title="Seçilen kategori için yeni bir isim giriniz">Seçilen kategoriyi güncelle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => AddNewCategory(1))" data-toggle="tooltip" data-placement="bottom" title="Seçilen bir üst kategorinin altına ekler">Yeni kategori ekle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => DeleteCategory())" data-toggle="tooltip" data-placement="bottom" title="Silebilmek için önce kategoriye ait ilanların silinmesi gerekir">Sil</button>
+        </div>
+    </div>
 }
 @if (categories2 == null)
 {
@@ -68,22 +76,32 @@ else
 }
 else
 {
-    <EditForm Model="@categories2.First()">
-        <div class="form-row align-items-center">
-            <div class="col-auto">
-                <select id="level2" class="form-control" @onchange="Level2Changed">
-                    <option>Kategori Seçiniz</option>
-                    @foreach (var category in categories2)
-                    {
-                        <option value="@category.CategoryID">@category.CategoryName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-auto">
-                <input @bind="selectedID2" class="form-control" />
-            </div>
+    <div class="form-row align-items-center mb-3">
+        <div class="col-auto">
+            <select id="level2" class="form-control" @onchange="Level2Changed">
+                <option>Kategori Seçiniz</option>
+                @foreach (var category in categories2)
+                {
+                    <option value="@category.CategoryID">@category.CategoryName</option>
+                }
+            </select>
         </div>
-    </EditForm>
+        <div class="col-auto">
+            <input @bind="selectedID2" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <input @bind="@newValue2" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCategory(2))" data-toggle="tooltip" data-placement="bottom" title="Seçilen kategori için yeni bir isim giriniz">Seçilen kategoriyi güncelle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => AddNewCategory(2))" data-toggle="tooltip" data-placement="bottom" title="Seçilen bir üst kategorinin altına ekler">Yeni kategori ekle</button>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary" @onclick="@(() => DeleteCategory())" data-toggle="tooltip" data-placement="bottom" title="Silebilmek için önce kategoriye ait ilanların silinmesi gerekir">Sil</button>
+        </div>
+    </div>
 }
 
 
@@ -93,6 +111,7 @@ else
     private IEnumerable<CategoryModel> categories0, categories1, categories2;
 
     private int selectedID0, selectedID1, selectedID2;
+    private string newValue0, newValue1, newValue2;
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,27 +146,58 @@ else
     //    }
     //}
 
-    async Task UpdateCategory(EditContext formContext)
+    async Task UpdateCategory(byte level)
     {
-        bool IsFormValid = formContext.Validate();
+        CategoryModel categoryModel;
 
-        if (IsFormValid)
+        switch (level)
         {
-            CategoryModel category = new CategoryModel();
-            category.CategoryName = @categories0.First().CategoryName;
-            category.CategoryID = @categories0.First().CategoryID;
-            category.ParentCategoryID = @categories0.First().ParentCategoryID;
-            await Http.PutJsonAsync("api/category", category);
+            case 0:
+                categoryModel = new CategoryModel(selectedID0, newValue0, 0);
+                break;
+            case 1:
+                categoryModel = new CategoryModel(selectedID1, newValue1, selectedID0);
+                break;
+            case 2:
+                categoryModel = new CategoryModel(selectedID2, newValue2, selectedID1);
+                break;
+            default:
+                categoryModel = null;
+                break;
         }
+
+        await Http.PutJsonAsync("api/category", categoryModel);
     }
 
-    void AddNewCategory(EditContext formContext)
+    async Task AddNewCategory(byte level)
+    {
+        CategoryModel categoryModel;
+
+        switch (level)
+        {
+            case 0:
+                categoryModel = new CategoryModel(newValue0, 0);
+                break;
+            case 1:
+                categoryModel = new CategoryModel(newValue1, selectedID0);
+                break;
+            case 2:
+                categoryModel = new CategoryModel(newValue2, selectedID1);
+                break;
+            default:
+                categoryModel = null;
+                break;
+        }
+
+        await Http.PutJsonAsync("api/category", categoryModel);
+    }
+
+    async Task DeleteCategory()
     {
 
     }
 
-    void DeleteCategory(EditContext formContext)
-    {
 
-    }
 }
+
+
