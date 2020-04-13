@@ -6,17 +6,26 @@
 
 @if (categories0 == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading...ZAAA</em></p>
 }
 else
 {
-    <select id="level0" class="form-control" @onchange="Level0Changed">
-        <option>Kategori Seçiniz</option>
-        @foreach (var category in categories0)
-        {
-            <option value="@category.CategoryID">@category.CategoryName</option>
-        }
-    </select>
+    <EditForm Model="@categories0.First()">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <select id="level0" class="form-control" @onchange="Level0Changed">
+                    <option>Kategori Seçiniz</option>
+                    @foreach (var category in categories0)
+                    {
+                        <option value="@category.CategoryID">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <input @bind="selectedID0" class="form-control" />
+            </div>
+        </div>
+    </EditForm>
 }
 @if (categories1 == null)
 {
@@ -24,13 +33,34 @@ else
 }
 else
 {
-    <select id="level1" class="form-control" @onchange="Level1Changed">
-        <option>Kategori Seçiniz</option>
-        @foreach (var category in categories1)
-        {
-            <option value="@category.CategoryID">@category.CategoryName</option>
-        }
-    </select>
+    <EditForm Model="@categories1.First()" Context="formContext">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <select id="level1" class="form-control" @onchange="Level1Changed">
+                    <option>Kategori Seçiniz</option>
+                    @foreach (var category in categories1)
+                    {
+                        <option value="@category.CategoryID">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <input @bind="selectedID1" class="form-control" />
+            </div>
+            <div class="col-auto">
+                <input @bind="@categories1.First().CategoryName" class="form-control" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" @onclick="@(() => UpdateCategory(formContext))">Seçilen kategoriyi güncelle</button>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" @onclick="@(() => AddNewCategory(formContext))">Yeni kategori ekle</button>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" @onclick="@(() => DeleteCategory(formContext))">Sil</button>
+            </div>
+        </div>
+    </EditForm>
 }
 @if (categories2 == null)
 {
@@ -38,24 +68,31 @@ else
 }
 else
 {
-    <select id="level2" class="form-control">
-        <option>Kategori Seçiniz</option>
-        @foreach (var category in categories2)
-        {
-            <option value="@category.CategoryID">@category.CategoryName</option>
-        }
-    </select>
+    <EditForm Model="@categories2.First()">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <select id="level2" class="form-control" @onchange="Level2Changed">
+                    <option>Kategori Seçiniz</option>
+                    @foreach (var category in categories2)
+                    {
+                        <option value="@category.CategoryID">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <input @bind="selectedID2" class="form-control" />
+            </div>
+        </div>
+    </EditForm>
 }
 
 
 
 
 @code {
-    private IEnumerable<CategoryModel> categories0;
-    private IEnumerable<CategoryModel> categories1;
-    private IEnumerable<CategoryModel> categories2;
+    private IEnumerable<CategoryModel> categories0, categories1, categories2;
 
-    private int selectedID;
+    private int selectedID0, selectedID1, selectedID2;
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,14 +104,49 @@ else
         categories1 = null;
         categories2 = null;
         categories1 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/" + e.Value);
+        selectedID0 = Convert.ToInt32(e.Value);
     }
 
     async Task Level1Changed(ChangeEventArgs e)
     {
         categories2 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/" + e.Value);
+        selectedID1 = Convert.ToInt32(e.Value);
     }
 
-    async Task CheckChildCategory()
+    void Level2Changed(ChangeEventArgs e)
+    {
+        selectedID1 = Convert.ToInt32(e.Value);
+    }
+
+    //async Task CheckChildCategory(CategoryModel category)
+    //{
+    //    IEnumerable<CategoryModel> categories = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/" + category.CategoryID);
+    //    if (categories == null)
+    //    {
+
+    //    }
+    //}
+
+    async Task UpdateCategory(EditContext formContext)
+    {
+        bool IsFormValid = formContext.Validate();
+
+        if (IsFormValid)
+        {
+            CategoryModel category = new CategoryModel();
+            category.CategoryName = @categories0.First().CategoryName;
+            category.CategoryID = @categories0.First().CategoryID;
+            category.ParentCategoryID = @categories0.First().ParentCategoryID;
+            await Http.PutJsonAsync("api/category", category);
+        }
+    }
+
+    void AddNewCategory(EditContext formContext)
+    {
+
+    }
+
+    void DeleteCategory(EditContext formContext)
     {
 
     }

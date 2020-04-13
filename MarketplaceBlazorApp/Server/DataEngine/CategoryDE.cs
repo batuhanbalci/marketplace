@@ -9,27 +9,27 @@ namespace MarketplaceBlazorApp.DataEngine
 {
     public class CategoryDE
     {
-        public static IEnumerable<CategoryModel> GetCategories(int parentCategoryID = 0)
+        public async Task<IEnumerable<CategoryModel>> GetCategories(int parentCategoryID = 0)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("@ParentCategoryID", parentCategoryID);
-            return DapperORM.ReturList<CategoryModel>("CategoryGET", param);
+            return await DapperORM.ReturListAsync<CategoryModel>("CategoryGET", param);
         }
 
-        public static void AddOrEdit(string categoryName, int parentCategoryID, int categoryID = 0)
+        public async Task AddOrEdit(CategoryModel category)
         {
             DynamicParameters param = new DynamicParameters();
-            param.Add("@CategoryName", categoryName);
-            param.Add("@ParentCategoryID", parentCategoryID);
+            param.Add("@CategoryName", category.CategoryName);
+            param.Add("@ParentCategoryID", category.ParentCategoryID);
 
-            if (categoryID == 0)
+            if (category.CategoryID == 0)
             {
-                DapperORM.ExecuteWithoutReturn("CategorySET", param);
+                await DapperORM.ExecuteWithoutReturnAsync("CategorySET", param);
             }
             else
             {
-                param.Add("@CategoryID", categoryID);
-                DapperORM.ExecuteWithoutReturn("CategoryUPDATE", param);
+                param.Add("@CategoryID", category.CategoryID);
+                await DapperORM.ExecuteWithoutReturnAsync("CategoryUPDATE", param);
             }
         }
     }

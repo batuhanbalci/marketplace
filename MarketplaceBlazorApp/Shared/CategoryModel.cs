@@ -14,6 +14,6 @@ namespace MarketplaceBlazorApp
         public int CategoryID { get => categoryID; set => categoryID = value; }
         public string CategoryName { get => categoryName; set => categoryName = value; }
         public int ParentCategoryID { get => parentCategoryID; set => parentCategoryID = value; }
-        //public virtual ICollection<CategoryModel> SubCategories { get; set; }
+        public virtual ICollection<CategoryModel> SubCategories { get; set; }
     }
 }

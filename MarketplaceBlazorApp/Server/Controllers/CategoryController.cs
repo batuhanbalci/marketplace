@@ -13,9 +13,17 @@ namespace MarketplaceBlazorApp.Server.Controllers
     public class CategoryController : ControllerBase
     {
         [HttpGet("{categoryID}")]
-        public IEnumerable<CategoryModel> GetCategories(int categoryID = 0)
+        public async Task<IEnumerable<CategoryModel>> GetCategories(int categoryID = 0)
         {
-            return CategoryDE.GetCategories(categoryID); 
+            CategoryDE categoryDE = new CategoryDE();
+            return await categoryDE.GetCategories(categoryID); 
+        }
+
+        [HttpPut]
+        public async Task UpdateCategory([FromBody] CategoryModel category)
+        {
+            CategoryDE categoryDE = new CategoryDE();
+            await categoryDE.AddOrEdit(category);
         }
     }
 }
