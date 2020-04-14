@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MarketplaceBlazorApp.DataEngine;
+using MarketplaceBlazorApp.Shared;
 
 namespace MarketplaceBlazorApp.Server.Controllers
 {

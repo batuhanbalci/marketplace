@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MarketplaceBlazorApp.DataEngine;
 using Microsoft.AspNetCore.Authorization;
 using MarketplaceBlazorApp.Server.Services;
+using MarketplaceBlazorApp.Shared;
 
 namespace MarketplaceBlazorApp.Server.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MarketplaceBlazorApp
+namespace MarketplaceBlazorApp.Shared
 {
     public class RegionCityModel
     {

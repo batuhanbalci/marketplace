@@ -1,4 +1,4 @@
-﻿namespace MarketplaceBlazorApp
+﻿namespace MarketplaceBlazorApp.Shared
 {
     public class ItemPhotoModel
     {

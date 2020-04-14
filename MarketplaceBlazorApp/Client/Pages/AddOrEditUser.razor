@@ -9,7 +9,7 @@
 
 @if (user == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Yükleniyor...</em></p>
 }
 else
 {
@@ -40,6 +40,39 @@ else
             <button class="btn btn-primary">Güncelle</button>
         </div>
     </EditForm>
+
+    <div class="row">
+        <div class="col-sm-6">
+            @if (phone == null)
+            {
+                <p><em>Hata.</em></p>
+            }
+            else
+            {
+                <EditForm Model="@phone" OnValidSubmit="HandleValidSubmitForPhone">
+                    <InputText type="tel" class="form-control" @bind-Value="phone.Number" />
+                    <button class="btn btn-primary">Yeni numara ekle</button>
+                </EditForm>
+            }
+        </div>
+        <div class="col-sm-6">
+            @if (phones == null)
+            {
+                <p><em>Kayıtlı telefon numarası bulunamadı.</em></p>
+            }
+            else
+            {
+                foreach (var phone in phones)
+                {
+                    <div class="form-group">
+                        <input type="tel" value="@phone.Number" class="form-control" />
+                        <button class="btn btn-primary">Güncelle</button>
+                        <button class="btn btn-primary">Sil</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 }
 
 
@@ -49,12 +82,18 @@ else
     private UserModel[] users;
     private UserModel user;
 
+    private IEnumerable<PhoneModel> phones;
+    private PhoneModel phone;
+
     protected override async Task OnInitializedAsync()
     {
-        await LoadItems();
+        await LoadUser();
+        phone = new PhoneModel();
+        phone.PhoneID = 0;
+        phone.UserID = user.UserID;
     }
 
-    async Task LoadItems()
+    async Task LoadUser()
     {
         if (userID == 0)
         {
@@ -65,6 +104,7 @@ else
         {
             users = await Http.GetJsonAsync<UserModel[]>($"api/user/{userID}");
             user = users[0];
+            await LoadPhones(user.UserID);
         }
     }
 
@@ -72,5 +112,16 @@ else
     {
         await Http.PutJsonAsync("api/user/", user);
         NavigationManager.NavigateTo("showUsers");
+    }
+
+    async Task LoadPhones(int userID)
+    {
+        phones = await Http.GetJsonAsync<IEnumerable<PhoneModel>>($"api/phone/{userID}");
+        StateHasChanged();
+    }
+
+    async Task HandleValidSubmitForPhone()
+    {
+        await Http.PutJsonAsync("api/phone/", phone);
     }
 }

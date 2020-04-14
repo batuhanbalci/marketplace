@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MarketplaceBlazorApp
+namespace MarketplaceBlazorApp.Shared
 {
     public class AuthenticateModel
     {

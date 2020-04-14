@@ -45,6 +45,7 @@ else
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-6">
                 <MarketplaceBlazorApp.Client.Pages.Region OnChange="@GetNeighborhoodID"></MarketplaceBlazorApp.Client.Pages.Region>
@@ -101,7 +102,8 @@ else
 }
 
 
-@code {
+@code 
+{
     [Parameter] public int itemID { get; set; }
 
     private ItemModel[] items;

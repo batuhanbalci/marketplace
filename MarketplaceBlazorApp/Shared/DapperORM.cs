@@ -7,7 +7,7 @@ using System.Data;
 using System.Data.SqlTypes;
 using System.Data.SqlClient;
 
-namespace MarketplaceBlazorApp
+namespace MarketplaceBlazorApp.Shared
 {
     public class DapperORM
     {

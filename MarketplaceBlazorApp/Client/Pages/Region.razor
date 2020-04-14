@@ -50,7 +50,7 @@ else
 }
 else
 {
-    <select id="neighborhoods" @onchange="OnChangeInternal" class="form-control">
+    <select id="neighborhoods" @onchange="NeighborhoodSelectionChanged" class="form-control">
         <option>Mahalle Seçiniz</option>
         @foreach (var neighborhood in neighborhoods)
         {
@@ -99,11 +99,16 @@ Seçilen mahalledi ID : @neighborhoodID
         neighborhoods = await Http.GetJsonAsync<RegionNeighborhoodModel[]>("api/Region/Neighborhoods/" + e.Value);
     }
 
+    async Task NeighborhoodSelectionChanged(ChangeEventArgs e)
+    {
+        neighborhoodID = Convert.ToInt32(e.Value);
+        await OnChangeInternal(e);
+    }
+
     async Task OnChangeInternal(ChangeEventArgs e)
     {
         if (OnChange.HasDelegate)
         {
-            neighborhoodID = Convert.ToInt32(e.Value);
             await OnChange.InvokeAsync(Convert.ToInt32(e.Value));
         }
     }
