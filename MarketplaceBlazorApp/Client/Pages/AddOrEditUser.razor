@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "Admin,Mağaza,Editör,Kullanıcı")]
 
-<h3>AddOrEditUser</h3>
+<h3>Kullanıcı Paneli</h3>
 
 @if (user == null)
 {
@@ -13,64 +13,92 @@
 }
 else
 {
-    <EditForm Model="@user" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="form-group">
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">@("@")</div>
-                </div>
-                <InputText type="text" class="form-control" id="mail" placeholder="Mail" @bind-Value="user.Mail" />
-            </div>
-        </div>
-        <div class="form-group">
-            <InputText type="password" class="form-control" id="password" placeholder="Şifre" @bind-Value="user.Password" />
-        </div>
-        <div class="form-group">
-            <InputText type="text" class="form-control" id="name" placeholder="Ad" @bind-Value="user.Name" />
-        </div>
-        <div class="form-group">
-            <InputText type="text" class="form-control" id="surname" placeholder="Soyad" @bind-Value="user.Surname" />
-        </div>
-        <div class="form-group">
-            <InputText type="text" class="form-control" id="tckno" placeholder="TC Kimlik No" @bind-Value="user.Tckno" />
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">Güncelle</button>
-        </div>
-    </EditForm>
-
     <div class="row">
         <div class="col-sm-6">
-            @if (phone == null)
-            {
-                <p><em>Hata.</em></p>
-            }
-            else
-            {
-                <EditForm Model="@phone" OnValidSubmit="HandleValidSubmitForPhone">
-                    <InputText type="tel" class="form-control" @bind-Value="phone.Number" />
-                    <button class="btn btn-primary">Yeni numara ekle</button>
-                </EditForm>
-            }
+            <EditForm Model="@user" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="col-sm-6 my-1">
+                    <div class="input-group">
+                        <label class="sr-only" for="mail">E Mail</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">@("@")</div>
+                            </div>
+                            <InputText type="text" class="form-control" id="mail" placeholder="Mail" @bind-Value="user.Mail" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
+                    <div class="input-group">
+                        <label class="sr-only" for="password">Şifre</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">*</div>
+                            </div>
+                            <InputText type="password" class="form-control" id="password" placeholder="Şifre" @bind-Value="user.Password" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
+                    <div class="input-group mb-2">
+                        <InputText type="text" class="form-control" id="name" placeholder="Ad" @bind-Value="user.Name" />
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
+                    <div class="input-group mb-2">
+                        <InputText type="text" class="form-control" id="surname" placeholder="Soyad" @bind-Value="user.Surname" />
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
+                    <div class="input-group mb-2">
+                        <InputText type="text" class="form-control" id="tckno" placeholder="TC Kimlik No" @bind-Value="user.Tckno" />
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
+                        <button class="btn btn-primary">Güncelle</button>
+                </div>
+            </EditForm>
         </div>
         <div class="col-sm-6">
-            @if (phones == null)
-            {
-                <p><em>Kayıtlı telefon numarası bulunamadı.</em></p>
-            }
-            else
-            {
-                foreach (var phone in phones)
-                {
-                    <div class="form-group">
-                        <input type="tel" value="@phone.Number" class="form-control" />
-                        <button class="btn btn-primary">Güncelle</button>
-                        <button class="btn btn-primary">Sil</button>
-                    </div>
-                }
-            }
+            <div class="row">
+                <div class="col-sm-6">
+                    @if (phone == null)
+                    {
+                        <p><em>Hata.</em></p>
+                    }
+                    else
+                    {
+                        <EditForm Model="@phone" OnValidSubmit="HandleValidSubmitForPhone">
+                            <div class="row mb-1">
+                                <div class="col-sm-6"><InputText type="tel" class="form-control" @bind-Value="phone.Number" /></div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-sm-6"><button class="btn btn-primary btn-block">Yeni numara ekle</button></div>
+                            </div>
+                        </EditForm>
+                    }
+                </div>
+                <div class="col-sm-6">
+                    @if (userID > 0)
+                    {
+                        if (phones == null)
+                        {
+                            <p><em>Kayıtlı telefon numarası bulunamadı.</em></p>
+                        }
+                        else
+                        {
+                            foreach (var phone in phones)
+                            {
+                                <div class="row">
+                                    <div class="col-sm-6"><label class="form-control">@phone.Number</label></div>
+                                    <div class="col-sm-6"><button class="btn btn-primary" @onclick="(() => DeletePhone(phone.PhoneID))">Sil</button></div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -84,6 +112,7 @@ else
 
     private IEnumerable<PhoneModel> phones;
     private PhoneModel phone;
+    private string newPhoneValue;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,5 +152,18 @@ else
     async Task HandleValidSubmitForPhone()
     {
         await Http.PutJsonAsync("api/phone/", phone);
+        await LoadPhones(userID);
     }
+
+    async Task DeletePhone(int phoneID)
+    {
+        await Http.DeleteAsync($"api/phone/{phoneID}");
+        await LoadPhones(userID);
+    }
+
+    //async Task UpdatePhone(int phoneID)
+    //{
+    //    await Http.PutJsonAsync("api/phone/", phone);
+    //    NavigationManager.NavigateTo($"addorEditUser/{userID}");
+    //}
 }

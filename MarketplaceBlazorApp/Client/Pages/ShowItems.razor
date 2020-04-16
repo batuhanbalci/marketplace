@@ -1,9 +1,9 @@
 ﻿@page "/showItems"
 @using MarketplaceBlazorApp.Shared
 @inject HttpClient Http
+@attribute [Authorize(Roles = "Admin, Editör")]
 
-
-<h3>ShowItems</h3>
+<h3>İlanlar</h3>
 
 @if (items == null)
 {

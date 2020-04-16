@@ -2,9 +2,15 @@
 @using System.Security.Claims;
 
 <div class="sidebar">
-    <NavMenu />
+    <AuthorizeView Roles="Admin, Editör">
+        <Authorized>
+            <NavAdminMenu />
+        </Authorized>
+        <NotAuthorized>
+            <NavMenu />
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
-
 
 <div class="main">
     <div class="top-row px-4">
@@ -14,7 +20,7 @@
                     @{
                         var claimsIdentity = context.User.Identity as System.Security.Claims.ClaimsIdentity;
                         if (claimsIdentity != null)
-                        {                                     
+                        {
                             var c = claimsIdentity.FindFirst(ClaimTypes.PrimarySid);
                             if (c != null)
                             {
@@ -22,7 +28,6 @@
                             }
                         }
                     }
-
                     <a href="LogOut">Çıkış Yap</a>
                 </Authorized>
                 <NotAuthorized>
@@ -37,3 +42,8 @@
         @Body
     </div>
 </div>
+
+@*<footer class="container-fluid">
+        <p>Footer - Batuhan</p>
+    </footer>*@
+

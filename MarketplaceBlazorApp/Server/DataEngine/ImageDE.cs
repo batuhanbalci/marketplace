@@ -22,5 +22,12 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@ItemID", itemID);
             await DapperORM.ExecuteWithoutReturnAsync("ItemPhotoSET", param);
         }
+
+        //public async Task<bool> CheckIsPhotoProfilePhoto(string profilePhotoPath)
+        //{
+        //    DynamicParameters param = new DynamicParameters();
+        //    param.Add("@Path", profilePhotoPath);
+        //    await DapperORM.ExecuteReturnScalarAsync<bool>("", param);
+        //}
     }
 }

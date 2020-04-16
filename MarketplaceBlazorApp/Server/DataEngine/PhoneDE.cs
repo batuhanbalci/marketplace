@@ -33,10 +33,10 @@ namespace MarketplaceBlazorApp.DataEngine
             }
         }
 
-        public async Task DeletePhoneByUserID(int userID)
+        public async Task DeletePhone(int phoneID)
         {
             DynamicParameters param = new DynamicParameters();
-            param.Add("@PhoneID", userID);
+            param.Add("@PhoneID", phoneID);
             await DapperORM.ExecuteWithoutReturnAsync("PhoneDELETE", param);
         }
     }

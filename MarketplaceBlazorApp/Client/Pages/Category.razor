@@ -1,6 +1,7 @@
 ﻿@page "/category"
 @using MarketplaceBlazorApp.Shared
 @inject HttpClient Http
+@attribute [Authorize(Roles = "Admin, Editör")]
 
 <h3>Category</h3>
 

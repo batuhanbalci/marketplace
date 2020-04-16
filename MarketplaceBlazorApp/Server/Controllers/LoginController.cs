@@ -32,8 +32,7 @@ namespace MarketplaceBlazorApp.Server.Controllers
             umodel.Password = login.Password;
             umodel = userDE.UserLogin(umodel);
 
-            //to do : yanlış login yapılırsa patlıyo
-            if (umodel.UserID == 0) return BadRequest(new UserModel { Successful = false, Error = "Username and password are invalid." });
+            if (umodel == null) return BadRequest(new UserModel { Successful = false, Error = "Username and password are invalid." });
 
             var claims = new[]
             {

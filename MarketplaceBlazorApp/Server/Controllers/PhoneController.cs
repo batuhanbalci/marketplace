@@ -20,18 +20,18 @@ namespace MarketplaceBlazorApp.Server.Controllers
             return await phoneDE.GetPhonesByUserID(userID);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task AddOrEdit([FromBody] PhoneModel phoneModel)
         {
             PhoneDE phoneDE = new PhoneDE();
             await phoneDE.AddOrEditPhone(phoneModel);
         }
 
-        [HttpDelete("{userID}")]
-        public async Task Delete(int userID)
+        [HttpDelete("{phoneID}")]
+        public async Task Delete(int phoneID)
         {
             PhoneDE phoneDE = new PhoneDE();
-            await phoneDE.DeletePhoneByUserID(userID);
+            await phoneDE.DeletePhone(phoneID);
         }
     }
 }

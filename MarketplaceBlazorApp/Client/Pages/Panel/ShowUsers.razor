@@ -1,9 +1,9 @@
-﻿@page "/showUsers"
+﻿@page "/panel/showUsers"
 @using MarketplaceBlazorApp.Shared
 @inject HttpClient Http
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>ShowUsers</h3>
+<h3>Kullanıcılar</h3>
 
 @if (users == null)
 {
