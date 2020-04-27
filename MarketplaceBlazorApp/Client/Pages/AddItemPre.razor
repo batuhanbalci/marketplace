@@ -1,0 +1,83 @@
+﻿@page "/addItemPre"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+<h3>İlan Eklemek İçin Kategori Seçin</h3>
+
+<div class="row">
+    <button class="btn btn-primary mx-3 my-3">İlan Ekle</button>
+</div>
+<div class="row">
+    @if (categories0 != null)
+    {
+        <div class="col-3">
+            <div class="list-group">
+                @foreach (var category in categories0)
+                {
+                    IsActive = category.CategoryID == selectedID0 ? "active" : "";
+                    <button class="list-group-item list-group-item-action @IsActive" @onclick="@(() => Level0Selected(category.CategoryID))">@category.CategoryName</button>
+                }
+            </div>
+        </div>
+    }
+    @if (categories1 != null)
+    {
+        <div class="col-3">
+            <div class="list-group">
+                @foreach (var category in categories1)
+                {
+                    IsActive = category.CategoryID == selectedID1 ? "active" : "";
+                    <button class="list-group-item list-group-item-action @IsActive" @onclick="@(() => Level1Selected(category.CategoryID))">@category.CategoryName</button>
+                }
+            </div>
+        </div>
+    }
+    @if (categories2 != null)
+    {
+        <div class="col-3">
+            <div class="list-group">
+                @foreach (var category in categories2)
+                {
+                    IsActive = category.CategoryID == selectedID2 ? "active" : "";
+                    <button class="list-group-item list-group-item-action @IsActive" @onclick="@(() => Level2Selected(category.CategoryID))">@category.CategoryName</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private IEnumerable<CategoryModel> categories0, categories1, categories2;
+
+    private int selectedID0, selectedID1, selectedID2;
+    private string newValue0, newValue1, newValue2;
+    private string IsActive = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories0 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/0");
+    }
+
+    async Task Level0Selected(int id)
+    {
+        categories1 = null;
+        categories2 = null;
+        selectedID0 = id;
+        selectedID1 = 0;
+        selectedID2 = 0;
+        categories1 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>($"api/category/{selectedID0}");
+    }
+
+    async Task Level1Selected(int id)
+    {
+        categories2 = null;
+        selectedID1 = id;
+        selectedID2 = 0;
+        categories2 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>($"api/category/{selectedID1}");
+    }
+
+    void Level2Selected(int id)
+    {
+        selectedID2 = id;
+    }
+}

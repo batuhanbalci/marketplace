@@ -41,6 +41,17 @@ else
                     </div>
                 </div>
                 <div class="col-sm-6 my-1">
+                    <div class="input-group">
+                        <label class="sr-only" for="passwordConfirm">Şifre Tekrarı</label>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">*</div>
+                            </div>
+                            <InputText type="password" class="form-control" id="passwordConfirm" placeholder="Şifre Tekrarı" @bind-Value="user.ConfirmPassword" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 my-1">
                     <div class="input-group mb-2">
                         <InputText type="text" class="form-control" id="name" placeholder="Ad" @bind-Value="user.Name" />
                     </div>
@@ -56,7 +67,7 @@ else
                     </div>
                 </div>
                 <div class="col-sm-6 my-1">
-                        <button class="btn btn-primary">Güncelle</button>
+                    <button class="btn btn-primary">Güncelle</button>
                 </div>
             </EditForm>
         </div>
@@ -140,7 +151,7 @@ else
     async Task HandleValidSubmit()
     {
         await Http.PutJsonAsync("api/user/", user);
-        NavigationManager.NavigateTo("showUsers");
+        NavigationManager.NavigateTo("panel/showUsers");
     }
 
     async Task LoadPhones(int userID)
