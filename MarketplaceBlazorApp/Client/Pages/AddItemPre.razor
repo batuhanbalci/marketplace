@@ -1,11 +1,13 @@
 ﻿@page "/addItemPre"
 @using MarketplaceBlazorApp.Shared
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime;
 
 <h3>İlan Eklemek İçin Kategori Seçin</h3>
 
 <div class="row">
-    <button class="btn btn-primary mx-3 my-3">İlan Ekle</button>
+    <button class="btn btn-primary mx-3 my-3" disabled="@(!HasAChild)" @onclick="@(() => NextPage())">İlan Ekle</button>
 </div>
 <div class="row">
     @if (categories0 != null)
@@ -49,12 +51,14 @@
 @code {
     private IEnumerable<CategoryModel> categories0, categories1, categories2;
 
-    private int selectedID0, selectedID1, selectedID2;
+    private int selectedID0, selectedID1, selectedID2, lastSelected;
     private string newValue0, newValue1, newValue2;
     private string IsActive = "";
+    private bool HasAChild = false;
 
     protected override async Task OnInitializedAsync()
     {
+        HasAChild = false;
         categories0 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/0");
     }
 
@@ -66,6 +70,8 @@
         selectedID1 = 0;
         selectedID2 = 0;
         categories1 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>($"api/category/{selectedID0}");
+        lastSelected = selectedID0;
+        HasAChild = await HasChild(lastSelected);
     }
 
     async Task Level1Selected(int id)
@@ -74,10 +80,29 @@
         selectedID1 = id;
         selectedID2 = 0;
         categories2 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>($"api/category/{selectedID1}");
+        lastSelected = selectedID1;
+        HasAChild = await HasChild(lastSelected);
     }
 
-    void Level2Selected(int id)
+    async Task Level2Selected(int id)
     {
         selectedID2 = id;
+        lastSelected = selectedID2;
+        HasAChild = await HasChild(lastSelected);
+    }
+
+    async Task<bool> HasChild(int id)
+    {
+        CategoryModel[] children = await Http.GetJsonAsync<CategoryModel[]>($"api/category/{id}");
+        return children.Count() > 0 ? false : true;
+    }
+
+    async Task NextPage()
+    {
+        bool result = await HasChild(lastSelected);
+        if (result)
+        {
+            NavigationManager.NavigateTo($"addItem/{lastSelected}");
+        }
     }
 }

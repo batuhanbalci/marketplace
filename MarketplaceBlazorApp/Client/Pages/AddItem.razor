@@ -1,0 +1,115 @@
+﻿@page "/addItem/{categoryID:int}"
+@using MarketplaceBlazorApp.Shared
+@using MarketplaceBlazorApp
+@inject HttpClient Http
+@using System.Security.Claims;
+
+<h3>AddItem</h3>
+
+@if (item == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <Authorized>
+            @{
+                var claimsIdentity = context.User.Identity as System.Security.Claims.ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var c = claimsIdentity.FindFirst(ClaimTypes.PrimarySid);
+                    if (c != null)
+                    {
+                        userID = Convert.ToInt32(c.Value);
+                    }
+                }
+            }
+        </Authorized>
+    </AuthorizeView>
+    <EditForm Model="@item" OnValidSubmit="HandleValidSubmit">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="title">Başlık</label>
+                    <InputText type="text" class="form-control" id="title" placeholder="Başlık" @bind-Value="item.Title" />
+                </div>
+                <div class="form-group">
+                    <label for="description">Açıklama</label>
+                    <InputTextArea class="form-control" id="description" rows="3" @bind-Value="item.Description"></InputTextArea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Fiyat</label>
+                    <InputNumber type="number" class="form-control" id="price" placeholder="0.00" step="any" @bind-Value="item.Price" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <MarketplaceBlazorApp.Client.Pages.Region OnChange="@GetNeighborhoodID"></MarketplaceBlazorApp.Client.Pages.Region>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                Mahalle seçiniz
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="map">Haritadan konum seçiniz :</label><br />
+                    <iframe id="map"
+                            width="600"
+                            height="300"
+                            frameborder="0" style="border:0"
+                            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB43_d1ZZdKVhjF_M3ywopNqwNLmiRoZmE&q=Ankara">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <button class="btn btn-primary">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+
+@code
+{
+    [Parameter] public int categoryID { get; set; }
+
+    private ItemModel item;
+    private int userID;
+    private int neighborhoodID = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = new ItemModel();
+        item.CategoryID = categoryID;
+    }
+
+    async Task HandleValidSubmit()
+    {
+        item.UserID = userID;
+        item.MapX = 0;
+        item.MapY = 0;
+        item.NeighborhoodID = neighborhoodID;
+        item.ProfilePhotoPath = "";
+        item.State = ItemStates.Bekleyen;
+
+        if (neighborhoodID == 0)
+        {
+
+        }
+        else
+        {
+            await Http.PutJsonAsync("api/item/UpdateItem", item);
+        }
+    }
+
+    private void GetNeighborhoodID(int id)
+    {
+        neighborhoodID = id;
+    }
+}
