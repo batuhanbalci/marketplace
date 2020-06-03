@@ -65,6 +65,15 @@ else
             </div>
         </div>
         <div class="row">
+            @if (properties != null)
+            {
+                foreach (var property in properties)
+                {
+                    <div>@property.PropertyName</div>
+                }
+            }
+        </div>
+        <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <button class="btn btn-primary">Ekle</button>
@@ -82,11 +91,13 @@ else
     private ItemModel item;
     private int userID;
     private int neighborhoodID = 0;
+    private IEnumerable<PropertyModel> properties;
 
     protected override async Task OnInitializedAsync()
     {
         item = new ItemModel();
         item.CategoryID = categoryID;
+        properties = await Http.GetJsonAsync<IEnumerable<PropertyModel>>($"api/property/{categoryID}/0");
     }
 
     async Task HandleValidSubmit()

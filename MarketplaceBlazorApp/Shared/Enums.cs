@@ -23,6 +23,29 @@ namespace MarketplaceBlazorApp.Shared
         Diğer = 3
     }
 
+    public enum PropertyUnitType : Int16 // TO DO
+    {
+        Gram,
+        Kilogram,
+        Ton,
+        Santimetre,
+        Metre,
+        Kilometre,
+        Dakika,
+        Saat,
+        Gün,
+        Hafta,
+        Ay,
+        Yıl,
+        Hz,
+        Mhz,
+        Ghz,
+        Kilobyte,
+        Megabyte,
+        Gigabyte,
+        Terabyte
+    }
+
     public class Enums
     {
 

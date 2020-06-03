@@ -1,0 +1,105 @@
+﻿@page "/panel/properties"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Özellikler</h3>
+
+@if (categories0 == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <select id="level0" class="form-control" @onchange="Level0Changed">
+            <option>Kategori Seçiniz</option>
+            @foreach (var category in categories0)
+            {
+                <option value="@category.CategoryID">@category.CategoryName</option>
+            }
+        </select>
+    </div>
+    @if (properties != null)
+    {
+        <div class="row">
+            <div class="row">
+                <div class="col-6">
+                    <select class="form-control" @onchange="PropertyChanged">
+                        <option>Özellik Seçiniz</option>
+                        @foreach (var property in properties)
+                        {
+                            <option value="@property.PropertyID">@property.PropertyName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6">
+                    <h3>Seçilen özelliği güncelle</h3>
+                    <input type="text" placeholder="Özellik adı" @bind="selectedPropertyName" />
+                    <input type="text" placeholder="Birimi" @bind="selectedUnitType" />
+                    <button type="submit" class="btn btn-primary" @onclick="UpdateProperty">Seçilen özelliği güncelle</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <h3>Yeni özellik ekle</h3>
+                    <input type="text" placeholder="Özellik adı" @bind="newPropertyName" />
+                    <input type="text" placeholder="Birimi" @bind="newUnitType" />
+                    <button type="submit" class="btn btn-primary" @onclick="AddProperty">Seçilen kategoriye ekle</button>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code
+{
+    private IEnumerable<PropertyModel> properties;
+    private IEnumerable<CategoryModel> categories0;
+
+    private string newPropertyName, newUnitType, selectedPropertyName, selectedUnitType;
+    private int selectedCategoryID = 0;
+    private int selectedPropertyID = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories0 = await Http.GetJsonAsync<IEnumerable<CategoryModel>>("api/category/0");
+    }
+
+    async Task Level0Changed(ChangeEventArgs e)
+    {
+        properties = await Http.GetJsonAsync<IEnumerable<PropertyModel>>("api/property/0/0");
+        selectedCategoryID = Convert.ToInt32(e.Value);
+    }
+
+    async Task AddProperty()
+    {
+        PropertyModel newProperty = new PropertyModel();
+        newProperty.PropertyName = newPropertyName;
+        newProperty.Type = newUnitType;
+        newProperty.CategoryID = selectedCategoryID;
+        await Http.PutJsonAsync<HttpResponseMessage>("api/property", newProperty);
+    }
+
+    async Task PropertyChanged(ChangeEventArgs e)
+    {
+        selectedPropertyID = Convert.ToInt32(e.Value);
+        PropertyModel[] selectedProperty = await Http.GetJsonAsync<PropertyModel[]>($"api/property/0/{selectedPropertyID}");
+        selectedPropertyName = selectedProperty[0].PropertyName;
+        selectedUnitType = selectedProperty[0].Type;
+    }
+
+    async Task UpdateProperty()
+    {
+        if (selectedPropertyID > 0)
+        {
+            PropertyModel newProperty = new PropertyModel();
+            newProperty.PropertyID = selectedPropertyID;
+            newProperty.PropertyName = selectedPropertyName;
+            newProperty.Type = selectedUnitType;
+            newProperty.CategoryID = selectedCategoryID;
+            await Http.PutJsonAsync("api/property", newProperty);
+        }
+    }
+
+}
