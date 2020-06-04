@@ -27,15 +27,34 @@ else
         <tbody>
             @foreach (var user in users)
             {
-                <tr>
-                    <td>@user.UserID</td>
-                    <td>@(user.Name + " " + user.Surname)</td>
-                    <td>@user.Tckno</td>
-                    <td>@user.Mail</td>
-                    <td>@user.Password</td>
-                    <td>@user.Role</td>
-                    <td><a href="@("AddOrEditUser/" +  user.UserID)">Düzenle</a></td>
-                </tr>
+                if (user.Role == Roles.Engellenmiş)
+                {
+                    <tr class="table-dark">
+                        <td>@user.UserID</td>
+                        <td>@(user.Name + " " + user.Surname)</td>
+                        <td>@user.Tckno</td>
+                        <td>@user.Mail</td>
+                        <td>@user.Password</td>
+                        <td>@user.Role</td>
+                        <td><a href="@("AddOrEditUser/" + user.UserID)" class="btn disabled">Düzenle</a></td>
+                        <td><a href="#" @onclick="@(() => BanUser(user))">Engeli Kaldır</a></td>
+                        <td><a href="#" @onclick="@(() => DeleteUser(user.UserID))">Sil</a></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@user.UserID</td>
+                        <td>@(user.Name + " " + user.Surname)</td>
+                        <td>@user.Tckno</td>
+                        <td>@user.Mail</td>
+                        <td>@user.Password</td>
+                        <td>@user.Role</td>
+                        <td><a href="@("AddOrEditUser/" + user.UserID)">Düzenle</a></td>
+                        <td><a href="#" @onclick="@(() => BanUser(user))">Engelle</a></td>
+                        <td><a href="#" @onclick="@(() => DeleteUser(user.UserID))">Sil</a></td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -48,5 +67,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         users = await Http.GetJsonAsync<IEnumerable<UserModel>>("api/user/0");
+    }
+
+    async Task BanUser(UserModel user)
+    {
+        user.ConfirmPassword = user.Password;
+        user.Role = user.Role == Roles.Engellenmiş ? Roles.Kullanıcı : Roles.Engellenmiş;
+        await Http.PutJsonAsync("api/user/", user);
+    }
+
+    async Task DeleteUser(int userID)
+    {
+        await Http.DeleteAsync($"api/user/{userID}");
     }
 }

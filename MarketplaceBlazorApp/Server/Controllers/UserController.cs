@@ -13,7 +13,7 @@ namespace MarketplaceBlazorApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+
     public class UserController : ControllerBase
     {
         //[AllowAnonymous]
@@ -55,9 +55,11 @@ namespace MarketplaceBlazorApp.Server.Controllers
             await userDE.AddOrEdit(user);
         }
 
-        public async Task DeleteUser([FromBody] UserModel user)
+        [HttpDelete("{userID}")]
+        public async Task DeleteUser(int userID)
         {
-            //TO DO
+            UserDE userDE = new UserDE();
+            await userDE.DeleteUser(userID);
         }
     }
 }

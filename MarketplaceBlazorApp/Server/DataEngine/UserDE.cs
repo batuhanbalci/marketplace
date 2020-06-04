@@ -50,5 +50,12 @@ namespace MarketplaceBlazorApp.DataEngine
                 await DapperORM.ExecuteWithoutReturnAsync("UserSET", param);
             }
         }
+
+        public async Task DeleteUser(int userID)
+        {
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@UserID", userID);
+            await DapperORM.ExecuteWithoutReturnAsync("UserDELETE", param);
+        }
     }
 }
