@@ -24,6 +24,7 @@
                             var c = claimsIdentity.FindFirst(ClaimTypes.PrimarySid);
                             if (c != null)
                             {
+                                <a href="@("UsersItems/" + c.Value)">İlanlarım</a>
                                 <a href="@("AddOrEditUser/" + c.Value)">Merhaba, @context.User.Identity.Name!</a>
                             }
                         }

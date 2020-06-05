@@ -16,6 +16,7 @@ namespace MarketplaceBlazorApp.Server.Controllers
     [Authorize]
     public class ItemController : ControllerBase
     {
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<ItemModel>> GetAllItems()
         {
@@ -23,11 +24,12 @@ namespace MarketplaceBlazorApp.Server.Controllers
             return await itemDE.GetItems();
         }
 
-        [HttpGet("{itemID}")]
-        public async Task<IEnumerable<ItemModel>> GetItem(int itemID)
+        [AllowAnonymous]
+        [HttpGet("{itemID}/{userID}")]
+        public async Task<IEnumerable<ItemModel>> GetItem(int itemID, int userID)
         {
             ItemDE itemDE = new ItemDE();
-            return await itemDE.GetItemWithPhotos(itemID);
+            return await itemDE.GetItemWithPhotos(itemID, userID);
         }
 
         [Route("[action]")]     //PUT???
@@ -47,6 +49,7 @@ namespace MarketplaceBlazorApp.Server.Controllers
         }
 
         [Route("[action]")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task UpdateClickCount([FromBody] int itemID)
         {

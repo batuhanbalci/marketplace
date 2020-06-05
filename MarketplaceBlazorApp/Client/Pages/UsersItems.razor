@@ -1,0 +1,46 @@
+﻿@page "/usersItems/{userID:int}"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Mağaza, Kullanıcı")]
+
+<h3>İlanlarım</h3>
+
+@if (items == null)
+{
+    <p>İlanınız Bulunamadı</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in items)
+        {
+            <div class="col-sm-3 mb-3">
+                @if (item.ProfilePhotoPath == null || item.ProfilePhotoPath == "")
+                {
+                    <a href="@("itemDetails/" + item.ItemID)"><img width="200" src="img/NoImage.png" /><br /></a>
+                }
+                else
+                {
+                    <a href="@("itemDetails/" + item.ItemID)"><img width="200" heigh="200" src="@("img/" + item.ProfilePhotoPath)" /></a><br />
+                }
+                <a href="@("itemDetails/" + item.ItemID)">@item.Title</a>
+                <a href="@("editItem/" + item.ItemID)">Düzenle</a>
+            </div>
+        }
+    </div>
+}
+
+@code
+{
+    [Parameter] public int userID { get; set; }
+    private IEnumerable<ItemModel> items;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        items = await Http.GetJsonAsync<IEnumerable<ItemModel>>($"api/Item/0/{userID}");
+
+
+    }
+
+}

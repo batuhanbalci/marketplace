@@ -16,12 +16,23 @@ namespace MarketplaceBlazorApp.DataEngine
             return await GetItemWithPhotos(itemID);
         }
 
-        public async Task<List<ItemModel>> GetItemWithPhotos(int itemID = 0) //TO DO : make better
+        public async Task<List<ItemModel>> GetItemWithPhotos(int itemID = 0, int userID = 0) //TO DO : make better
         {
-            var param = new { ItemID = itemID };
-            using (SqlConnection cnn = new SqlConnection(DapperORM.GetConnectionString()))
+            DynamicParameters param = new DynamicParameters();
+            string sql;
+            if (userID > 0)
             {
-                string sql = "ItemGET";
+                param.Add("@UserID", userID);
+                sql = "ItemGETByUserID";
+            }
+            else
+            {
+                param.Add("@ItemID", itemID);
+                sql = "ItemGET";
+            }
+            
+            using (SqlConnection cnn = new SqlConnection(DapperORM.GetConnectionString()))
+            { 
                 List<ItemModel> listItems = null;
                 var lists = await cnn.QueryAsync<ItemModel, ItemPhotoModel, ItemModel>(sql, (i, p) =>
                 {
@@ -61,6 +72,7 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@MapX", item.MapX);
             param.Add("@MapY", item.MapY);
             param.Add("@ProfilePhotoPath", item.ProfilePhotoPath);
+            param.Add("@ReleaseDate", item.ReleaseDate);
 
             if (item.ItemID == 0)
             {
