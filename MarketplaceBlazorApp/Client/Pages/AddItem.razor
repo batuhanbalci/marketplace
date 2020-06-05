@@ -44,7 +44,19 @@ else
                 </div>
             </div>
         </div>
-
+        <div class="row">
+            <h3>İlan Özellikleri</h3>
+            @if (properties != null)
+            {
+                foreach (var property in properties)
+                {
+                    <div class="row">
+                        <div class="col-sm-4">@property.PropertyName</div>
+                        <div class="col-sm-4"><InputTextArea class="form-control"></InputTextArea></div>
+                    </div>
+                }
+            }
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <MarketplaceBlazorApp.Client.Pages.Region OnChange="@GetNeighborhoodID"></MarketplaceBlazorApp.Client.Pages.Region>
@@ -63,15 +75,6 @@ else
                     </iframe>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            @if (properties != null)
-            {
-                foreach (var property in properties)
-                {
-                    <div>@property.PropertyName</div>
-                }
-            }
         </div>
         <div class="row">
             <div class="col-sm-6">

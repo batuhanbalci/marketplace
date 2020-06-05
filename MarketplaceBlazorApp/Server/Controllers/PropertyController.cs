@@ -21,7 +21,7 @@ namespace MarketplaceBlazorApp.Server.Controllers
         } 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromBody] PropertyModel property)
+        public async Task<IActionResult> UpdateOrEditProperty([FromBody] PropertyModel property)
         {
             PropertyDE propertDE = new PropertyDE();
             await propertDE.AddOrEdit(property);

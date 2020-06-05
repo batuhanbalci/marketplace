@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MarketplaceBlazorApp.Server.DataEngine;
+using MarketplaceBlazorApp.DataEngine;
+using MarketplaceBlazorApp.Shared;
 
 namespace MarketplaceBlazorApp.Server.Controllers
 {
@@ -44,6 +45,14 @@ namespace MarketplaceBlazorApp.Server.Controllers
         public JsonResult Neighborhoods(int districtID)
         {
             return new JsonResult(regionDE.GetRegionNeighborhoods(districtID));
+        }
+
+        [Route("[action]/{neighborhoodID}")]
+        [HttpGet]
+        public async Task<IEnumerable<CascadingRegionNames>> GetCascadingRegionNames(int neighborhoodID)
+        {
+            RegionDE regionDE = new RegionDE();
+            return await regionDE.GetCascadingRegionNames(neighborhoodID);
         }
     }
 }

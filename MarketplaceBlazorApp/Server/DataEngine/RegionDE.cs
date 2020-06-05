@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MarketplaceBlazorApp.Shared;
 
-namespace MarketplaceBlazorApp.Server.DataEngine
+namespace MarketplaceBlazorApp.DataEngine
 {
     public class RegionDE
     {
@@ -33,6 +33,13 @@ namespace MarketplaceBlazorApp.Server.DataEngine
             DynamicParameters param = new DynamicParameters();
             param.Add("@DistrictID", districtID);
             return DapperORM.ReturList<RegionNeighborhoodModel>("RegionNeighborhoodGET", param);
+        }
+
+        public async Task<IEnumerable<CascadingRegionNames>> GetCascadingRegionNames(int neighborhoodID)
+        {
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@NeighborhoodID", neighborhoodID);
+            return await DapperORM.ReturListAsync<CascadingRegionNames>("RegionNamesGETByNeighborhoodID", param);
         }
     }
 }

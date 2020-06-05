@@ -44,6 +44,16 @@ else
         <p>@item.Description</p>
     </div>
     <div class="row">
+        <h4>Adres:</h4><br />
+        @if (regionNames != null)
+        {
+            <p>@regionNames[0].City </p>
+            <p>@regionNames[0].County </p>
+            <p>@regionNames[0].District </p>
+            <p>@regionNames[0].Neighborhood </p>
+        }
+    </div>
+    <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="map">Konumu :</label><br />
@@ -51,7 +61,7 @@ else
                         width="600"
                         height="300"
                         frameborder="0" style="border:0"
-                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB43_d1ZZdKVhjF_M3ywopNqwNLmiRoZmE&q=Ankara">
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB43_d1ZZdKVhjF_M3ywopNqwNLmiRoZmE&q='@regionNames[0].City'+'@regionNames[0].County'">
                 </iframe>
             </div>
         </div>
@@ -64,11 +74,19 @@ else
     private ItemModel[] items;
     private ItemModel item;
 
+    private CascadingRegionNames[] regionNames;
+
     protected override async Task OnInitializedAsync()
     {
         items = await Http.GetJsonAsync<ItemModel[]>($"api/Item/{itemID}/0");
         item = items[0];
+        await GetNamesOfRegions(item.NeighborhoodID);
         await Http.PostJsonAsync($"api/Item/UpdateClickCount", item.ItemID);
+    }
+
+    async Task GetNamesOfRegions(int neighborhoodID)
+    {
+        regionNames = await Http.GetJsonAsync<CascadingRegionNames[]>("api/Region/GetCascadingRegionNames/" + neighborhoodID);
     }
 
 }

@@ -45,4 +45,17 @@ namespace MarketplaceBlazorApp.Shared
         public string Postcode { get => postcode; set => postcode = value; }
         public int DistrictID { get => districtID; set => districtID = value; }
     }
+
+    public class CascadingRegionNames
+    {
+        private string city;
+        private string county;
+        private string district;
+        private string neighborhood;
+
+        public string City { get => city; set => city = value; }
+        public string County { get => county; set => county = value; }
+        public string District { get => district; set => district = value; }
+        public string Neighborhood { get => neighborhood; set => neighborhood = value; }
+    }
 }
