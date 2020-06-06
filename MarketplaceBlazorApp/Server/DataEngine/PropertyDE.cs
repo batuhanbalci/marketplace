@@ -9,7 +9,7 @@ namespace MarketplaceBlazorApp.DataEngine
 {
     public class PropertyDE
     {
-        public async Task<IEnumerable<PropertyModel>> Get(int categoryID = 0, int propertyID = 0)
+        public async Task<IEnumerable<PropertyModel>> PropertyGet(int categoryID = 0, int propertyID = 0)
         {
             DynamicParameters param = new DynamicParameters();
             if (propertyID > 0)
@@ -18,6 +18,13 @@ namespace MarketplaceBlazorApp.DataEngine
             }
             param.Add("@CategoryID", categoryID);
             return await DapperORM.ReturListAsync<PropertyModel>("PropertyGET", param);
+        }
+
+        public async Task<IEnumerable<PropertyModel>> PropertyValueGet(int itemID)
+            {
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@ItemID", itemID);
+            return await DapperORM.ReturListAsync<PropertyModel>("ItemPropertyValueGET", param);
         }
 
         public async Task AddOrEdit(PropertyModel property)

@@ -44,6 +44,32 @@ else
         <p>@item.Description</p>
     </div>
     <div class="row">
+        @if (item.Properties != null)
+        {
+            <div class="col-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Özellik Adı</th>
+                            <th>Değeri</th>
+                            <th>Tipi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var property in item.Properties)
+                        {
+                            <tr>
+                                <td class="col-3">@property.PropertyName</td>
+                                <td class="col-3">@property.Value</td>
+                                <td class="col-3">@property.Type</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+    <div class="row">
         <h4>Adres:</h4><br />
         @if (regionNames != null)
         {
@@ -73,6 +99,7 @@ else
     [Parameter] public int itemID { get; set; }
     private ItemModel[] items;
     private ItemModel item;
+    private IEnumerable<PropertyModel> properties;
 
     private CascadingRegionNames[] regionNames;
 
@@ -81,6 +108,8 @@ else
         items = await Http.GetJsonAsync<ItemModel[]>($"api/Item/{itemID}/0");
         item = items[0];
         await GetNamesOfRegions(item.NeighborhoodID);
+        properties = await Http.GetJsonAsync<IEnumerable<PropertyModel>>($"api/property/{itemID}");
+        item.Properties = properties;
         await Http.PostJsonAsync($"api/Item/UpdateClickCount", item.ItemID);
     }
 

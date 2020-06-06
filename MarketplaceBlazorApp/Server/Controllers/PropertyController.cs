@@ -17,8 +17,15 @@ namespace MarketplaceBlazorApp.Server.Controllers
         public async Task<IEnumerable<PropertyModel>> GetProperties(int categoryID = 0, int propertyID = 0)
         {
             PropertyDE propertDE = new PropertyDE();
-            return await propertDE.Get(categoryID, propertyID);
-        } 
+            return await propertDE.PropertyGet(categoryID, propertyID);
+        }
+
+        [HttpGet("{itemID}")]
+        public async Task<IEnumerable<PropertyModel>> GetItemPropertyValues(int itemID)
+        {
+            PropertyDE propertDE = new PropertyDE();
+            return await propertDE.PropertyValueGet(itemID);
+        }
 
         [HttpPut]
         public async Task<IActionResult> UpdateOrEditProperty([FromBody] PropertyModel property)

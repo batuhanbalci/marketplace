@@ -29,7 +29,8 @@ namespace MarketplaceBlazorApp.Server.Controllers
         public async Task<IEnumerable<ItemModel>> GetItem(int itemID, int userID)
         {
             ItemDE itemDE = new ItemDE();
-            return await itemDE.GetItemWithPhotos(itemID, userID);
+            var item = await itemDE.GetItemWithPhotos(itemID, userID);
+            return item;
         }
 
         [Route("[action]")]     //PUT???

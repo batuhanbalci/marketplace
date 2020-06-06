@@ -21,7 +21,7 @@ namespace MarketplaceBlazorApp.Shared
         private decimal mapY;
         private List<ItemPhotoModel> itemPhotos;
         private string profilePhotoPath;
-        private List<PropertyModel> properties;
+        private IEnumerable<PropertyModel> properties;
 
         public int ItemID { get => itemID; set => itemID = value; }
         public string Title { get => title; set => title = value; }
@@ -37,6 +37,6 @@ namespace MarketplaceBlazorApp.Shared
         public decimal MapY { get => mapY; set => mapY = value; }
         public List<ItemPhotoModel> ItemPhotos { get => itemPhotos; set => itemPhotos = value; }
         public string ProfilePhotoPath { get => profilePhotoPath; set => profilePhotoPath = value; }
-        public List<PropertyModel> Properties { get => properties; set => properties = value; }
+        public IEnumerable<PropertyModel> Properties { get => properties; set => properties = value; }
     }
 }
