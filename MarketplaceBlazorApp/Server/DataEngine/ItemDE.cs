@@ -149,11 +149,21 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@MapX", item.MapX);
             param.Add("@MapY", item.MapY);
             param.Add("@ProfilePhotoPath", item.ProfilePhotoPath);
-            param.Add("@ReleaseDate", item.ReleaseDate);
 
             if (item.ItemID == 0)
             {
-                await DapperORM.ExecuteWithoutReturnAsync("ItemSET", param);
+                item.ItemID = DapperORM.ExecuteReturnScalar<int>("ItemSET", param);
+                if (item.Properties != null)
+                {
+                    foreach (var property in item.Properties)
+                    {
+                        DynamicParameters propparam = new DynamicParameters();
+                        propparam.Add("@PropertyID", property.PropertyID);
+                        propparam.Add("@Value", property.Value);
+                        propparam.Add("@ItemID", item.ItemID);
+                        DapperORM.ExecuteWithoutReturn("ItemPropertyValueSET", propparam);
+                    }
+                }
             }
             else
             {

@@ -45,17 +45,21 @@ else
             </div>
         </div>
         <div class="row">
-            <h3>İlan Özellikleri</h3>
-            @if (properties != null)
-            {
-                foreach (var property in properties)
+            <div class="col-12">
+                @if (properties != null)
                 {
-                    <div class="row">
-                        <div class="col-sm-4">@property.PropertyName</div>
-                        <div class="col-sm-4"><InputTextArea class="form-control"></InputTextArea></div>
-                    </div>
+                    <h3>İlan Özellikleri</h3>
+                    @foreach (var property in item.Properties)
+                    {
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-sm-4"><label for="value">@property.PropertyName</label></div>
+                                <div class="col-sm-8"><InputText class="form-control" id="value" placeholder="@property.Type" @bind-Value="property.Value"></InputText></div>
+                            </div>
+                        </div>
+                    }
                 }
-            }
+            </div>
         </div>
         <div class="row">
             <div class="col-sm-6">
@@ -101,6 +105,7 @@ else
         item = new ItemModel();
         item.CategoryID = categoryID;
         properties = await Http.GetJsonAsync<IEnumerable<PropertyModel>>($"api/property/{categoryID}/0");
+        item.Properties = properties;
     }
 
     async Task HandleValidSubmit()

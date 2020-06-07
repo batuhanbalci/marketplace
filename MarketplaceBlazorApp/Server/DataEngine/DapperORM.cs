@@ -47,10 +47,12 @@ namespace MarketplaceBlazorApp.DataEngine
 
         public static async Task<T> ExecuteReturnScalarAsync<T>(string procedureName, DynamicParameters param)
         {
+            //BU ÇALIŞMIYOR SYNC ÇALIŞIYOR AMA?
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 await conn.OpenAsync();
-                return (T)Convert.ChangeType(conn.ExecuteScalarAsync(procedureName, param, commandType: System.Data.CommandType.StoredProcedure), typeof(T));
+                var result = conn.ExecuteScalarAsync(procedureName, param, commandType: System.Data.CommandType.StoredProcedure);
+                return (T)Convert.ChangeType(result.Id, typeof(T));
             }
         }
 

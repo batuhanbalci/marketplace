@@ -26,7 +26,7 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>ItemID</th>
+                <th>İlan No</th>
                 <th>Başlık</th>
                 <th>Açıklama</th>
                 <th><a @onclick="SortByPrice">Fiyat</a></th>
@@ -37,22 +37,37 @@ else
         <tbody>
             @foreach (var item in items)
             {
-            <tr>
-                <td>@item.ItemID</td>
-                <td>@item.Title</td>
-                <td>@item.Description</td>
-                <td>@item.Price</td>
-                <td>@item.ReleaseDate</td>
-                @if (item.ProfilePhotoPath == null || item.ProfilePhotoPath == "")
-                {
-                    <td><img width="100" src="img/NoImage.png" /></td>
-                }
-                else
-                {
-                    <td><img width="100" src="@("img/" + item.ProfilePhotoPath)" /></td>
-                }
-                <td><a href="@("editItem/" +  item.ItemID)">Düzenle</a></td>
-            </tr>
+                string trClass = ChangeTRClass(item.State);
+
+                <tr class="@trClass">
+                    <td>@item.ItemID</td>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price</td>
+                    <td>@item.ReleaseDate</td>
+                    @if (item.ProfilePhotoPath == null || item.ProfilePhotoPath == "")
+                    {
+                        <td><img width="100" src="img/NoImage.png" /></td>
+                    }
+                    else
+                    {
+                        <td><img width="100" src="@("img/" + item.ProfilePhotoPath)" /></td>
+                    }
+                    <td><a href="@("editItem/" +  item.ItemID)">Düzenle</a></td>
+                    @if (item.State == ItemStates.Bekleyen)
+                    {
+                        <td><a href="#" @onclick="@(() => ChangeState(item, ItemStates.Onaylanmış))">Onayla</a></td>
+                    }
+                    @if (item.State == ItemStates.Onaylanmış)
+                    {
+                        <td><a href="#" @onclick="@(() => ChangeState(item, ItemStates.Kaldırılmış))">Yayından Kaldır</a></td>
+                    }
+                    @if (item.State == ItemStates.Kaldırılmış)
+                    {
+                        <td><a href="#" @onclick="@(() => ChangeState(item, ItemStates.Onaylanmış))">Yayına Al</a></td>
+                    }
+                    <td><a href="">Sil</a></td>
+                </tr>
             }
         </tbody>
     </table>
@@ -69,6 +84,36 @@ else
     {
         origItems = await Http.GetJsonAsync<IEnumerable<ItemModel>>("api/Item");
         items = origItems;
+    }
+
+    async Task ChangeState(ItemModel item, ItemStates state)
+    {
+        item.State = state;
+        await Http.PutJsonAsync("api/item/UpdateItem", item);
+    }
+
+    string ChangeTRClass(ItemStates state)
+    {
+        string trClass;
+        switch (state)
+        {
+            case ItemStates.Bekleyen:
+                trClass = "table-warning";
+                break;
+            case ItemStates.Onaylanmış:
+                trClass = "";
+                break;
+            case ItemStates.Kaldırılmış:
+                trClass = "table-dark";
+                break;
+            case ItemStates.Diğer:
+                trClass = "table-info";
+                break;
+            default:
+                trClass = "";
+                break;
+        }
+        return trClass;
     }
 
     #region Filters
