@@ -53,7 +53,7 @@ else
                     {
                         <td><img width="100" src="@("img/" + item.ProfilePhotoPath)" /></td>
                     }
-                    <td><a href="@("editItem/" +  item.ItemID)">Düzenle</a></td>
+                    <td><a href="@("editItem/" + item.ItemID)">Düzenle</a></td>
                     @if (item.State == ItemStates.Bekleyen)
                     {
                         <td><a href="#" @onclick="@(() => ChangeState(item, ItemStates.Onaylanmış))">Onayla</a></td>
@@ -66,7 +66,27 @@ else
                     {
                         <td><a href="#" @onclick="@(() => ChangeState(item, ItemStates.Onaylanmış))">Yayına Al</a></td>
                     }
-                    <td><a href="">Sil</a></td>
+                    <td><a href="#" data-toggle="modal" data-target="@("#silModal"+item.ItemID)">Sil</a></td>
+                    <div class="modal fade" id="@("silModal"+item.ItemID)" tabindex="-1" role="dialog" aria-labelledby="Sil" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">İlanı Sil</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Bu ilana ait tüm fotoğraflar ve veriler silinecektir.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                                    <button type="button" class="btn btn-primary" @onclick="@(() => Delete(item))">Sil (@item.ItemID)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </tr>
             }
         </tbody>
@@ -115,6 +135,13 @@ else
         }
         return trClass;
     }
+
+    async Task Delete(ItemModel item)
+    {
+        await Http.DeleteAsync("api/item/" + item.ItemID);
+    }
+
+
 
     #region Filters
 

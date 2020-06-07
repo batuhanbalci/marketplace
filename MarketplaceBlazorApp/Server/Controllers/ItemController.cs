@@ -49,6 +49,13 @@ namespace MarketplaceBlazorApp.Server.Controllers
             await itemDE.AddOrEditItem(item);
         }
 
+        [HttpDelete("{itemID}")]
+        public async Task DeleteItem(int itemID)
+        {
+            ItemDE itemDE = new ItemDE();
+            await itemDE.ItemDelete(itemID);
+        }
+
         [Route("[action]")]
         [AllowAnonymous]
         [HttpPost]

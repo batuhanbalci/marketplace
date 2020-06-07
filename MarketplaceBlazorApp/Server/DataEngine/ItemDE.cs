@@ -178,5 +178,12 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@ItemID", itemID);
             await DapperORM.ExecuteWithoutReturnAsync("ItemClickCountSET", param);
         }
+
+        public async Task ItemDelete(int itemID)
+        {
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@ItemID", itemID);
+            await DapperORM.ExecuteWithoutReturnAsync("ItemDELETE", param);
+        }
     }
 }
