@@ -23,6 +23,12 @@ namespace MarketplaceBlazorApp.Shared
         Diğer = 3
     }
 
+    public enum MessageStates : byte
+    {
+        Okunmamış = 0,
+        Okunmuş = 1
+    }
+
     public enum PropertyUnitType : Int16 // TO DO
     {
         Gram,

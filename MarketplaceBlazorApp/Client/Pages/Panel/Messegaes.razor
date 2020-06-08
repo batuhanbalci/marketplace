@@ -1,0 +1,11 @@
+﻿@page "/messages"
+@using MarketplaceBlazorApp.Shared
+@inject HttpClient Http
+
+<h3>Messegaes</h3>
+
+@code
+{
+    [Parameter] public MessageModel PositionId { get; set; }
+
+}
