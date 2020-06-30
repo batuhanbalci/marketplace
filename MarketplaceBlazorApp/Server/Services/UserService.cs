@@ -10,7 +10,7 @@ namespace MarketplaceBlazorApp.Server.Services
 {
     public interface IUserService
     {
-        UserModel Authenticate(UserModel model);
+        LoginResultModel Authenticate(AuthenticateModel model);
     }
 
     public class UserService : IUserService
@@ -22,10 +22,10 @@ namespace MarketplaceBlazorApp.Server.Services
             _appSettings = appSettings.Value;
         }
 
-        public UserModel Authenticate(UserModel usermodel)
+        public LoginResultModel Authenticate(AuthenticateModel usermodel)
         {
             MarketplaceBlazorApp.DataEngine.UserDE ude = new MarketplaceBlazorApp.DataEngine.UserDE();
-            UserModel user = ude.UserLogin(usermodel);
+            LoginResultModel user = ude.UserLogin(usermodel);
 
             // return null if user not found
             if (user == null)

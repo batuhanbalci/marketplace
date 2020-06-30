@@ -17,7 +17,7 @@
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Please enter your details</h5>
+        <h5 class="card-title">Kayıt</h5>
         <EditForm Model="@userModel" OnValidSubmit="HandleRegistration">
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -59,13 +59,13 @@
 
 @code {
 
-    private UserModel userModel;
+    private UserRegisterModel userModel;
     private bool ShowErrors;
     private IEnumerable<string> Errors;
 
     protected override async Task OnInitializedAsync()
     {
-        userModel = new UserModel();
+        userModel = new UserRegisterModel();
     }
 
     private async Task HandleRegistration()

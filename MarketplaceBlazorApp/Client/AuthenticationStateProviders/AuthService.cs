@@ -26,31 +26,29 @@ namespace MarketplaceBlazorApp.Client.AuthenticationStateProviders
             _localStorage = localStorage;
         }
 
-        public async Task<RegisterResultModel> Register(UserModel registerModel)
+        public async Task<RegisterResultModel> Register(UserRegisterModel registerModel)
         {
-            var result = await _httpClient.PostJsonAsync<RegisterResultModel>("api/user/register", registerModel);
-
-            return result;
+            return await _httpClient.PostJsonAsync<RegisterResultModel>("api/user/register", registerModel);
         }
 
-        public async Task<UserModel> Login(AuthenticateModel loginModel)
+        public async Task<LoginResultModel> Login(AuthenticateModel loginModel)
         {
             //var loginAsJson = JsonSerializer.Serialize(loginModel);
             //var response = await _httpClient.PostAsync("api/user/authenticate", new StringContent(loginAsJson, Encoding.UTF8, "application/json"));
-            UserModel user;
-            user = await _httpClient.PostJsonAsync<UserModel>("api/login/authenticate", loginModel);
+            LoginResultModel loginResult;
+            loginResult = await _httpClient.PostJsonAsync<LoginResultModel>("api/login/authenticate", loginModel);
             //var loginResult = JsonSerializer.Deserialize<LoginResultModel>(await user.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (user == null)
+            if (loginResult == null)
             {
                 return null;
             }
 
-            await _localStorage.SetItemAsync("authToken", user.Token);
-            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(user.Token);//orijinalinde token yerine mail vardı ama sanki bu daha mantıklı oldu gibi
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", user.Token);
+            await _localStorage.SetItemAsync("authToken", loginResult.Token);
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginResult.Token);//orijinalinde token yerine mail vardı ama sanki bu daha mantıklı oldu gibi
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.Token);
 
-            return user;
+            return loginResult;
         }
 
         public async Task Logout()

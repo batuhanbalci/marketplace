@@ -6,14 +6,14 @@ namespace MarketplaceBlazorApp.Server.Services
 {
     public static class ExtensionMethods
     {
-        public static IEnumerable<UserModel> WithoutPasswords(this IEnumerable<UserModel> users)
+        public static IEnumerable<LoginResultModel> WithoutPasswords(this IEnumerable<LoginResultModel> users)
         {
             return users.Select(x => x.WithoutPassword());
         }
 
-        public static UserModel WithoutPassword(this UserModel user)
+        public static LoginResultModel WithoutPassword(this LoginResultModel user)
         {
-            user.Password = null;
+            //user.Password = null;
             return user;
         }
     }

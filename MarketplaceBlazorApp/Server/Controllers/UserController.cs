@@ -44,15 +44,17 @@ namespace MarketplaceBlazorApp.Server.Controllers
         public async Task UpdateUser([FromBody] UserModel user)
         {
             UserDE userDE = new UserDE();
-            await userDE.AddOrEdit(user);
+            await userDE.EditUser(user);
         }
 
         [AllowAnonymous]
-        [HttpPut("register")]
-        public async Task RegisterUser([FromBody] UserModel user)
+        [Route("register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] UserRegisterModel user)
         {
             UserDE userDE = new UserDE();
-            await userDE.AddOrEdit(user);
+            await userDE.AddUser(user);
+            return Ok(new RegisterResultModel { Successful = true });
         }
 
         [HttpDelete("{userID}")]

@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using MarketplaceBlazorApp.DataEngine;
+using MarketplaceBlazorApp.Client.Pages;
 
 namespace MarketplaceBlazorApp.Server.Controllers
 {
@@ -26,13 +27,14 @@ namespace MarketplaceBlazorApp.Server.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Login([FromBody] AuthenticateModel login)
         {
-            UserModel umodel = new UserModel(); // TO DO : user modelsiz yap ya da daha efficient
+            LoginResultModel umodel = new LoginResultModel(); // TO DO : user modelsiz yap ya da daha efficient
             UserDE userDE = new UserDE();
-            umodel.Mail = login.Mail;
-            umodel.Password = login.Password;
-            umodel = userDE.UserLogin(umodel);
+            umodel = userDE.UserLogin(login);
 
-            if (umodel == null) return BadRequest(new UserModel { Successful = false, Error = "Username and password are invalid." });
+            if (umodel == null)
+            {
+                return BadRequest(new LoginResultModel { Successful = false, Error = "Hatalı mail veya şifre." });
+            }
 
             var claims = new[]
             {
@@ -53,10 +55,10 @@ namespace MarketplaceBlazorApp.Server.Controllers
                 signingCredentials: creds
             );
 
-            umodel.Successful = true;
-            umodel.Token = new JwtSecurityTokenHandler().WriteToken(token);
+            //umodel.Successful = true;
+            //umodel.Token = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(umodel);
+            return Ok(new LoginResultModel { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
     }
 }

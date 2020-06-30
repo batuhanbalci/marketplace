@@ -9,18 +9,18 @@ namespace MarketplaceBlazorApp.DataEngine
 {
     public class UserDE
     {
-        public UserModel UserLogin(UserModel user)
+        public LoginResultModel UserLogin(AuthenticateModel user)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("@Mail", user.Mail);
             param.Add("@Password", user.Password);
 
-            var result = DapperORM.ReturList<UserModel>("UserLOGIN", param);
-            if (result.Count<UserModel>() == 0)
+            var result = DapperORM.ReturList<LoginResultModel>("UserLOGIN", param);
+            if (result.Count<LoginResultModel>() == 0)
             {
                 return null;
             }
-            return result.First<UserModel>();
+            return result.First<LoginResultModel>();
         }
 
         public async Task<IEnumerable<UserModel>> GetUsers(int userID = 0)
@@ -30,7 +30,7 @@ namespace MarketplaceBlazorApp.DataEngine
             return await DapperORM.ReturListAsync<UserModel>("UserGET", param);
         }
 
-        public async Task AddOrEdit(UserModel user)
+        public async Task AddUser(UserRegisterModel user)
         {
             DynamicParameters param = new DynamicParameters();
             param.Add("@Mail", user.Mail);
@@ -40,15 +40,21 @@ namespace MarketplaceBlazorApp.DataEngine
             param.Add("@Role", user.Role);
             param.Add("@TCKNO", user.Tckno);
 
-            if (user.UserID > 0)
-            {
-                param.Add("@UserID", user.UserID);
-                await DapperORM.ExecuteWithoutReturnAsync("UserUPDATE", param);
-            }
-            else
-            {
-                await DapperORM.ExecuteWithoutReturnAsync("UserSET", param);
-            }
+            await DapperORM.ExecuteWithoutReturnAsync("UserSET", param);
+        }
+
+        public async Task EditUser(UserModel user)
+        {         
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@UserID", user.UserID);
+            param.Add("@Mail", user.Mail);
+            param.Add("@Password", user.Password);
+            param.Add("@Name", user.Name);
+            param.Add("@Surname", user.Surname);
+            param.Add("@Role", user.Role);
+            param.Add("@TCKNO", user.Tckno);
+
+            await DapperORM.ExecuteWithoutReturnAsync("UserUPDATE", param);
         }
 
         public async Task DeleteUser(int userID)

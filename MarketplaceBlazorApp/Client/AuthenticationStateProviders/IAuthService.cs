@@ -5,8 +5,8 @@ namespace MarketplaceBlazorApp.Client.AuthenticationStateProviders
 {
     public interface IAuthService
     {
-        Task<UserModel> Login(AuthenticateModel loginModel);
+        Task<LoginResultModel> Login(AuthenticateModel loginModel);
         Task Logout();
-        Task<RegisterResultModel> Register(UserModel registerModel);
+        Task<RegisterResultModel> Register(UserRegisterModel registerModel);
     }
 }

@@ -11,7 +11,7 @@ namespace MarketplaceBlazorApp.Shared
         private string title;
         private string description;
         private int categoryID; //??
-        private int userID;
+        private UserModel user;
         private decimal price;
         private ItemStates state;
         private DateTime releaseDate;
@@ -27,7 +27,7 @@ namespace MarketplaceBlazorApp.Shared
         public string Title { get => title; set => title = value; }
         public string Description { get => description; set => description = value; }
         public int CategoryID { get => categoryID; set => categoryID = value; }
-        public int UserID { get => userID; set => userID = value; }
+        public UserModel User { get => user; set => user = value; }
         public decimal Price { get => price; set => price = value; }
         public ItemStates State { get => state; set => state = value; }
         public DateTime ReleaseDate { get => releaseDate; set => releaseDate = value; }

@@ -110,7 +110,9 @@ else
 
     async Task HandleValidSubmit()
     {
-        item.UserID = userID;
+        UserModel[] users = await Http.GetJsonAsync<UserModel[]>("api/user/"+userID);
+        users[0].ConfirmPassword = users[0].Password;
+        item.User = users[0];
         item.MapX = 0;
         item.MapY = 0;
         item.NeighborhoodID = neighborhoodID;
